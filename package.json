@@ -1,0 +1,15 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Server side for this family management project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Liam Doult",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^14.14.6",
+    "typescript": "^4.0.5"
+  }
+}
