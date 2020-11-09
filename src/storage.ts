@@ -147,4 +147,16 @@ export namespace Box {
         if (res.modifiedCount !== 1) throw new Error("No boxes updated");
     }
 
+    /**
+     * Get box information.
+     * 
+     * @param id Identification for the box
+     */
+    export async function get(id: String): Promise<RegisteredBox> {
+        const collection = client.db(dbName).collection(collectionName);
+        const res = await collection.findOne({_id: new ObjectId(id as string)});
+        if (!res) throw new NotFoundError();
+        return res;
+    }
+
 }

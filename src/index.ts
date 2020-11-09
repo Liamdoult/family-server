@@ -42,7 +42,16 @@ app.patch("/storage/box", async ( request: Request, response: Response ) => {
                 return response.status(500).send("Unknown Server Issue");
         }
     }
-} );
+});
+
+app.get("/storage/box", async ( request: Request, response: Response ) => {
+    if (!request.query) return response.status(400).send("Invalid Request");
+    if (!request.query.id) return response.status(400).send("Invalid Request");
+    const id = request.query.id;
+    if (typeof id !== "string") return response.status(400).send("Invalid Request");
+    const box = await Box.get(id);
+    return response.status(200).json(box);    
+})
 
 // start the Express server
 client.connect().then(() => {
