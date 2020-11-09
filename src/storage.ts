@@ -5,7 +5,11 @@ const url = 'mongodb://localhost:27017';
 const dbName = 'family';
 export const client = new MongoClient(url);
 
-export class NotFoundError extends Error {};
+export class NotFoundError extends Error {
+    constructor(id: String) {
+        super(`${id} not found.`);
+    }
+};
 
 export namespace Item {
     const collectionName = "items";
@@ -47,10 +51,10 @@ export namespace Item {
      * 
      * @param id Identifier of the item.
      */
-    async function get(id: String): Promise<RegisteredItem> {
+    export async function get(id: String): Promise<RegisteredItem> {
         const collection = client.db(dbName).collection(collectionName);
-        const res = await collection.findOne({_id: id});
-        if (!res) throw new NotFoundError();
+        const res = await collection.findOne({_id: new ObjectId(id as string)});
+        if (!res) throw new NotFoundError(id);
         return res as RegisteredItem;
     }
 
@@ -78,7 +82,6 @@ export namespace Item {
     export async function getMany(itemIds: Array<string | ObjectId>): Promise<RegisteredItem[]> {
         const collection = client.db(dbName).collection(collectionName);
         const res = await collection.find({_id: { $in : itemIds.map((id: string | ObjectId) => new ObjectId(id)) }});
-        console.log(res);
         return res.toArray();
     }
 }
@@ -155,7 +158,7 @@ export namespace Box {
     export async function get(id: String): Promise<RegisteredBox> {
         const collection = client.db(dbName).collection(collectionName);
         const res = await collection.findOne({_id: new ObjectId(id as string)});
-        if (!res) throw new NotFoundError();
+        if (!res) throw new NotFoundError(id);
         if (res.items) {
             res.items = await Item.getMany(res.items);
         }
