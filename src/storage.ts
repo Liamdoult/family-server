@@ -83,20 +83,6 @@ export namespace Item {
     }
 }
 
-/**
- * Get the id for an item.
- * 
- * If the item is the id, return the item.
- * 
- * @param item id required from.
- * @returns the id of the item.
- */
-function getId(item: String | Box.RegisteredBox | Item.RegisteredItem | { id: String }): String {
-    if (item instanceof String)
-        return item;
-    return item.id;
-}
-
 export namespace Box {
     const collectionName = "boxes";
 
