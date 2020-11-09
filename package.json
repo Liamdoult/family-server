@@ -11,12 +11,14 @@
   "author": "Liam Doult",
   "license": "UNLICENSED",
   "devDependencies": {
+    "@types/cors": "^2.8.8",
     "@types/express": "^4.17.8",
     "@types/mongodb": "^3.5.33",
     "@types/node": "^14.14.6",
     "typescript": "^4.0.5"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongodb": "^3.6.3"
   }

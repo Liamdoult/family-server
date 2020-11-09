@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { Response } from "express";
 import express from "express";
+import cors from "cors";
 
 import { client } from "./storage";
 import { Box } from "./storage";
@@ -11,8 +12,10 @@ const app = express();
 const port = 8080;
 
 app.use(express.json());
+app.use(cors());
 
-app.post( "/storage/box", async ( request: Request, response: Response ) => {
+app.post("/storage/box", async ( request: Request, response: Response ) => {
+    console.log("POST /storage/box");
     const json = request.body;
     if (!json) return response.status(400).send("Invalid Request");
     if (!json.location) return response.status(400).send("Invalid Request");
@@ -25,6 +28,7 @@ app.post( "/storage/box", async ( request: Request, response: Response ) => {
 } );
 
 app.patch("/storage/box", async ( request: Request, response: Response ) => {
+    console.log("PATCH /storage/box");
     const json = request.body;
     if (!json.box) return response.status(400).send("Invalid Request");
     if (!json.items) return response.status(400).send("Invalid Request");
@@ -44,6 +48,7 @@ app.patch("/storage/box", async ( request: Request, response: Response ) => {
 });
 
 app.get("/storage/box", async ( request: Request, response: Response ) => {
+    console.log("GET /storage/box");
     if (!request.query) return response.status(400).send("Invalid Request");
     if (!request.query.id) return response.status(400).send("Invalid Request");
     const id = request.query.id;
@@ -63,6 +68,7 @@ app.get("/storage/box", async ( request: Request, response: Response ) => {
 })
 
 app.get("/storage/item", async ( request: Request, response: Response ) => {
+    console.log("GET /storage/item");
     if (!request.query) return response.status(400).send("Invalid Request");
     if (!request.query.id) return response.status(400).send("Invalid Request");
     const id = request.query.id;
