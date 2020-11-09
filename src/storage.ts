@@ -67,6 +67,20 @@ export namespace Item {
             return register(item);
         }
     }
+
+    /**
+     * Return a list of items based on provide ids.
+     * 
+     * If id is not found, it will be ignored (It will not raise a not found error).
+     * 
+     * @param itemIds List of ids of items required.
+     */
+    export async function getMany(itemIds: Array<string | ObjectId>): Promise<RegisteredItem[]> {
+        const collection = client.db(dbName).collection(collectionName);
+        const res = await collection.find({_id: { $in : itemIds.map((id: string | ObjectId) => new ObjectId(id)) }});
+        console.log(res);
+        return res.toArray();
+    }
 }
 
 /**
@@ -156,6 +170,9 @@ export namespace Box {
         const collection = client.db(dbName).collection(collectionName);
         const res = await collection.findOne({_id: new ObjectId(id as string)});
         if (!res) throw new NotFoundError();
+        if (res.items) {
+            res.items = await Item.getMany(res.items);
+        }
         return res;
     }
 
