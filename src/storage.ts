@@ -22,7 +22,7 @@ export namespace Item {
     }
 
     export interface RegisteredItem extends Item {
-        id: String,
+        _id: String,
         created: Date,
     }
 
@@ -40,7 +40,7 @@ export namespace Item {
         const res = await collection.insertOne({...item, created: now});
         const id = res.insertedId;
         return {
-            id,
+            _id: id,
             created: now,
             ...item
         } as RegisteredItem;
@@ -90,12 +90,12 @@ export namespace Box {
     const collectionName = "boxes";
 
     export interface Box {
-        items: String[],
+        items: Item.RegisteredItem[],
         location: String,
     }
 
     export interface RegisteredBox {
-        id: String,
+        _id: String,
         created: Date,
         updated: Date[],
     }
@@ -114,7 +114,7 @@ export namespace Box {
             ...box
         });
         return {
-            id: res.insertedId,
+            _id: res.insertedId,
             created: now,
             updated: [],
             ...box,
@@ -131,7 +131,7 @@ export namespace Box {
      */
     export async function addItem(box: RegisteredBox | String, item: Item.RegisteredItem) {
         const collection = client.db(dbName).collection(collectionName);
-        const res = await collection.updateOne({_id: new ObjectId(box as string)}, { $push: { items: item.id, updated: new Date() } });
+        const res = await collection.updateOne({_id: new ObjectId(box as string)}, { $push: { items: item._id, updated: new Date() } });
         if (res.modifiedCount !== 1) throw new Error("No boxes updated");
     }
 
@@ -144,7 +144,7 @@ export namespace Box {
      * @param items The items that should be added to the box.
      */
     export async function addItems(box: RegisteredBox | String, items: Array<Item.RegisteredItem>) {
-        const ids = items.map(item => item.id);
+        const ids = items.map(item => item._id);
         const collection = client.db(dbName).collection(collectionName);
         const res = await collection.updateOne({_id: new ObjectId(box as string)}, { $push: { items: { $each: ids }, updated: new Date() } });
         if (res.modifiedCount !== 1) throw new Error("No boxes updated");
