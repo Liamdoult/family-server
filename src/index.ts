@@ -87,6 +87,33 @@ app.get("/storage/item", async ( request: Request, response: Response ) => {
     }
 })
 
+app.get("/storage/search", async ( request: Request, response: Response ) => {
+    console.log("GET /storage/search");
+    if (!request.query) return response.status(400).send("Invalid Request");
+    if (!request.query.term) return response.status(400).send("Invalid Request");
+    const items = await Item.search(request.query.term as string);
+    // const boxes = await Boxes.search(request.query.term);
+    return response.status(200).json({
+        // boxes,
+        items
+    })
+    // const id = request.query.id;
+    // if (typeof id !== "string") return response.status(400).send("Invalid Request");
+    // try {
+    //     const item = await Item.get(id);
+    //     return response.status(200).json(item);   
+    // } catch(err) {
+    //     switch (err.constructor) {
+    //         case (NotFoundError):
+    //             return response.status(400).send("Invalid Request");
+    //         default:
+    //             console.log(err);
+    //             return response.status(500).send("Unknown Server Issue");
+    //     }
+    // }
+})
+
+
 // start the Express server
 client.connect().then(() => {
     console.log("Mongo Connected at http://localhost:27017");

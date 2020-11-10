@@ -84,6 +84,17 @@ export namespace Item {
         const res = await collection.find({_id: { $in : itemIds.map((id: string | ObjectId) => new ObjectId(id)) }});
         return res.toArray();
     }
+
+    /**
+     * Search Items by name and description.
+     * 
+     * @param term Search term used to find items.
+     */
+    export async function search(term: string) {
+        const collection = client.db(dbName).collection(collectionName);
+        const res = await collection.find({$or: [ {name: {$regex: term}}, {description: { $regex: term }}]});
+        return res.toArray();
+    }
 }
 
 export namespace Box {
