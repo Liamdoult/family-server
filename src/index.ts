@@ -21,17 +21,27 @@ app.post("/storage/box", async ( request: Request, response: Response ) => {
     if (!json.label) return response.status(400).send("Invalid Request");
     if (!json.location) return response.status(400).send("Invalid Request");
 
-    const box = await Box.register({
-        label: json.label,
-        location: json.location,
-        items: [],
-    });
-    if (json.items) {
-        const items: Item.RegisteredItem[] = await Promise.all(json.items.map(Item.getItem));
-        await Box.addItems(box, json.items);
-        box.items = items;
+    try {
+        const box = await Box.register({
+            label: json.label,
+            location: json.location,
+            items: [],
+        });
+        if (json.items) {
+            const items: Item.RegisteredItem[] = await Promise.all(json.items.map(Item.getItem));
+            await Box.addItems(box, json.items);
+            box.items = items;
+        }
+        response.json(box);
+    } catch(err) {
+        switch (err.constructor) {
+            case (NotFoundError):
+                return response.status(400).send("Invalid Request");
+            default:
+                console.log(err);
+                return response.status(500).send("Unknown Server Issue");
+        }
     }
-    response.json(box);
 } );
 
 app.patch("/storage/box", async ( request: Request, response: Response ) => {
