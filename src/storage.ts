@@ -90,7 +90,7 @@ export namespace Item {
      * 
      * @param term Search term used to find items.
      */
-    export async function search(term: string) {
+    export async function search(term: string): Promise<RegisteredItem[]> {
         const collection = client.db(dbName).collection(collectionName);
         const res = await collection.find({$or: [ {name: {$regex: term}}, {description: { $regex: term }}]});
         return res.toArray();
@@ -103,9 +103,10 @@ export namespace Box {
     export interface Box {
         items: Item.RegisteredItem[],
         location: String,
+        label: String,
     }
 
-    export interface RegisteredBox {
+    export interface RegisteredBox extends Box {
         _id: String,
         created: Date,
         updated: Date[],
@@ -174,6 +175,17 @@ export namespace Box {
             res.items = await Item.getMany(res.items);
         }
         return res;
+    }
+
+    /**
+     * Search boxes by label.
+     * 
+     * @param term Term to compare
+     */
+    export async function search(term: String): Promise<RegisteredBox[]> {
+        const collection = client.db(dbName).collection(collectionName);
+        const res = await collection.find({$or: [ {label: {$regex: term}}, {location: { $regex: term }}]});
+        return res.toArray();
     }
 
 }
