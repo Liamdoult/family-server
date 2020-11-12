@@ -23,7 +23,7 @@ export namespace Item {
 
     export interface RegisteredItem extends Item {
         _id: String,
-        created: Date,
+        created: string,
     }
 
     /**
@@ -41,7 +41,7 @@ export namespace Item {
         const id = res.insertedId;
         return {
             _id: id,
-            created: now,
+            created: now.toISOString(),
             ...item
         } as RegisteredItem;
     }
@@ -108,8 +108,8 @@ export namespace Box {
 
     export interface RegisteredBox extends Box {
         _id: String,
-        created: Date,
-        updated: Date[],
+        created: string,
+        updated: string[],
     }
     
     /**
@@ -127,7 +127,7 @@ export namespace Box {
         });
         return {
             _id: res.insertedId,
-            created: now,
+            created: now.toISOString(),
             updated: [],
             ...box,
         } as RegisteredBox;
@@ -174,7 +174,11 @@ export namespace Box {
         if (res.items) {
             res.items = await Item.getMany(res.items);
         }
-        return res;
+        return {
+            ...res,
+            created: (new Date(res.created)).toISOString(),
+            updated: res.updated.map((d:number) => (new Date(d)).toISOString())
+        };
     }
 
     /**
