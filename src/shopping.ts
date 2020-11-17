@@ -40,4 +40,15 @@ export namespace Shopping {
         }});
         await collection.insertMany(fullItems);
     }
+
+    export async function purchased(id: ObjectId | string) {
+        const collection = client.db(dbName).collection(collectionName);
+        await collection.updateOne({_id: new ObjectId(id)}, {$set: {purchased: new Date(), onList: false}});
+    }
+
+    export async function deleted(id: ObjectId | string) {
+        const collection = client.db(dbName).collection(collectionName);
+        await collection.updateOne({_id: new ObjectId(id)}, {$set: {deleted: new Date(), onList: false}});
+
+    }
 }

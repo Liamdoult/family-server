@@ -131,6 +131,21 @@ app.post("/shopping", async ( request: Request, response: Response ) => {
     return response.status(200).json({});
 })
 
+app.patch("/shopping", async ( request: Request, response: Response ) => {
+    console.log("PATCH /shopping");
+    if (!request.query) return response.status(400).send("Invalid Request");
+    if (!request.query.id) return response.status(400).send("Invalid Request");
+    if (request.query.purchased) await Shopping.purchased(request.query.id as string);
+    return response.status(200).json({});
+})
+
+app.delete("/shopping", async ( request: Request, response: Response ) => {
+    console.log("DELETE /shopping");
+    if (!request.query) return response.status(400).send("Invalid Request");
+    if (!request.query.id) return response.status(400).send("Invalid Request");
+    await Shopping.deleted(request.query.id as string);
+    return response.status(200).json({});
+})
 
 // start the Express server
 // Mongo needs to be started before express to ensure mongo is always running
