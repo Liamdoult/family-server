@@ -28,7 +28,7 @@ export namespace Shopping {
         const collection = client.db(dbName).collection(collectionName);
         const res = collection.find({onList: {$eq: true}});
         if (!res) return [];
-        return res.toArray(); 
+        return await res.toArray(); 
     }
 
     export async function add(items: Array<Item>) {

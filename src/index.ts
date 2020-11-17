@@ -120,15 +120,15 @@ app.get("/storage/search", async ( request: Request, response: Response ) => {
 
 app.get("/shopping", async ( request: Request, response: Response ) => {
     console.log("GET /shopping");
-    return response.status(200).json({ items: Shopping.get() });
+    return response.status(200).json({ items: await Shopping.get() });
 })
 
 app.post("/shopping", async ( request: Request, response: Response ) => {
     console.log("POST /shopping");
     const json = request.body;
     if (!json.items) return response.status(400).send("Invalid Request");
-    await Shopping.add(json.items);
-    return response.status(200).json({});
+    const items = await Shopping.add(json.items);
+    return response.status(200).json({items});
 })
 
 app.patch("/shopping", async ( request: Request, response: Response ) => {
