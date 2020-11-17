@@ -3,9 +3,10 @@ import { Response } from "express";
 import express from "express";
 import cors from "cors";
 
-import { client } from "./storage";
+import { client } from "./database";
 import { Box } from "./storage";
 import { Item } from "./storage";
+import { Shopping } from "./shopping";
 import { NotFoundError } from "./storage";
 
 const app = express();
@@ -117,7 +118,23 @@ app.get("/storage/search", async ( request: Request, response: Response ) => {
 })
 
 
+app.get("/shopping", async ( request: Request, response: Response ) => {
+    console.log("GET /shopping");
+    return response.status(200).json({ items: Shopping.get() });
+})
+
+app.post("/shopping", async ( request: Request, response: Response ) => {
+    console.log("POST /shopping");
+    const json = request.body;
+    if (!json.items) return response.status(400).send("Invalid Request");
+    await Shopping.add(json.items);
+    return response.status(200).json({});
+})
+
+
 // start the Express server
+// Mongo needs to be started before express to ensure mongo is always running
+// when requests are made to the server.
 client.connect().then(() => {
     console.log("Mongo Connected at http://localhost:27017");
     app.listen( port, () => {

@@ -1,9 +1,8 @@
-import { MongoClient } from "mongodb";
 import { ObjectId } from "mongodb";
 
-const url = 'mongodb://localhost:27017';
-const dbName = 'family';
-export const client = new MongoClient(url);
+import { dbName } from "./database";
+import { client } from "./database";
+
 
 export class NotFoundError extends Error {
     constructor(id: String) {
