@@ -136,6 +136,7 @@ app.patch("/shopping", async ( request: Request, response: Response ) => {
     if (!request.query) return response.status(400).send("Invalid Request");
     if (!request.query.id) return response.status(400).send("Invalid Request");
     if (request.query.purchased) await Shopping.purchased(request.query.id as string);
+    if (request.query.unpurchased) await Shopping.unpurchased(request.query.id as string);
     return response.status(200).json({});
 })
 
