@@ -3,20 +3,10 @@ import { ObjectId } from "mongodb";
 import { dbName } from "./database";
 import { client } from "./database";
 
+import * as StorageLib from "../lib/storage";
+
 export namespace Item {
   const collectionName = "items";
-
-  export interface Item {
-    name: String;
-    description: String;
-    owner: String | undefined;
-    quantity: Number | undefined;
-  }
-
-  export interface RegisteredItem extends Item {
-    _id: String;
-    created: string;
-  }
 
   /**
    * Register a new item in the box.
@@ -26,7 +16,9 @@ export namespace Item {
    * @param owner (Optional) Who the item belongs to.
    * @param quantity (Optional) Quantity of items if more than 1.
    */
-  async function register(item: Item): Promise<RegisteredItem> {
+  async function register(
+    item: StorageLib.Item
+  ): Promise<StorageLib.RegisteredItem> {
     const now = new Date();
     const collection = client.db(dbName).collection(collectionName);
     const res = await collection.insertOne({ ...item, created: now });
@@ -35,7 +27,7 @@ export namespace Item {
       _id: id,
       created: now.toISOString(),
       ...item,
-    } as RegisteredItem;
+    } as StorageLib.RegisteredItem;
   }
 
   /**
@@ -43,11 +35,11 @@ export namespace Item {
    *
    * @param id Identifier of the item.
    */
-  export async function get(id: String): Promise<RegisteredItem> {
+  export async function get(id: String): Promise<StorageLib.RegisteredItem> {
     const collection = client.db(dbName).collection(collectionName);
     const res = await collection.findOne({ _id: new ObjectId(id as string) });
     if (!res) throw new NotFoundError(id);
-    return res as RegisteredItem;
+    return res as StorageLib.RegisteredItem;
   }
 
   /**
@@ -56,7 +48,9 @@ export namespace Item {
    * @param item
    * @returns A registered item.
    */
-  export async function getItem(item: String | Item): Promise<RegisteredItem> {
+  export async function getItem(
+    item: String | StorageLib.Item
+  ): Promise<StorageLib.RegisteredItem> {
     if (item instanceof String) {
       return get(item);
     } else {
@@ -73,22 +67,24 @@ export namespace Item {
    */
   export async function getMany(
     itemIds: Array<string | ObjectId>
-  ): Promise<RegisteredItem[]> {
+  ): Promise<StorageLib.RegisteredItem[]> {
     const collection = client.db(dbName).collection(collectionName);
-    const res = await collection.find({
+    const res = collection.find({
       _id: { $in: itemIds.map((id: string | ObjectId) => new ObjectId(id)) },
     });
     return res.toArray();
   }
 
   /**
-   * Search Items by name and description.
+   * SearchStorageLib.Items by name and description.
    *
    * @param term Search term used to find items.
    */
-  export async function search(term: string): Promise<RegisteredItem[]> {
+  export async function search(
+    term: string
+  ): Promise<StorageLib.RegisteredItem[]> {
     const collection = client.db(dbName).collection(collectionName);
-    const res = await collection.find({
+    const res = collection.find({
       $or: [{ name: { $regex: term } }, { description: { $regex: term } }],
     });
     return res.toArray();
@@ -98,24 +94,14 @@ export namespace Item {
 export namespace Box {
   const collectionName = "boxes";
 
-  export interface Box {
-    items: Item.RegisteredItem[];
-    location: String;
-    label: String;
-  }
-
-  export interface RegisteredBox extends Box {
-    _id: String;
-    created: string;
-    updated: string[];
-  }
-
   /**
    * Create a new box.
    *
    * @param location Location the box is stored.
    */
-  export async function register(box: Box): Promise<RegisteredBox> {
+  export async function register(
+    box: StorageLib.Box
+  ): Promise<StorageLib.RegisteredBox> {
     const now = new Date();
     const collection = client.db(dbName).collection(collectionName);
     const res = await collection.insertOne({
@@ -128,7 +114,7 @@ export namespace Box {
       created: now.toISOString(),
       updated: [],
       ...box,
-    } as RegisteredBox;
+    } as StorageLib.RegisteredBox;
   }
 
   /**
@@ -140,8 +126,8 @@ export namespace Box {
    * @param items Identifier of which item should be added to the box.
    */
   export async function addItem(
-    box: RegisteredBox | String,
-    item: Item.RegisteredItem
+    box: StorageLib.RegisteredBox | String,
+    item: StorageLib.RegisteredItem
   ) {
     const collection = client.db(dbName).collection(collectionName);
     const res = await collection.updateOne(
@@ -160,8 +146,8 @@ export namespace Box {
    * @param items The items that should be added to the box.
    */
   export async function addItems(
-    box: RegisteredBox | String,
-    items: Array<Item.RegisteredItem>
+    box: StorageLib.RegisteredBox | String,
+    items: Array<StorageLib.RegisteredItem>
   ) {
     const ids = items.map((item) => item._id);
     const collection = client.db(dbName).collection(collectionName);
@@ -177,7 +163,7 @@ export namespace Box {
    *
    * @param id Identification for the box
    */
-  export async function get(id: String): Promise<RegisteredBox> {
+  export async function get(id: String): Promise<StorageLib.RegisteredBox> {
     const collection = client.db(dbName).collection(collectionName);
     const res = await collection.findOne({ _id: new ObjectId(id as string) });
     if (!res) throw new NotFoundError(id);
@@ -196,9 +182,11 @@ export namespace Box {
    *
    * @param term Term to compare
    */
-  export async function search(term: String): Promise<RegisteredBox[]> {
+  export async function search(
+    term: String
+  ): Promise<StorageLib.RegisteredBox[]> {
     const collection = client.db(dbName).collection(collectionName);
-    const res = await collection.find({
+    const res = collection.find({
       $or: [{ label: { $regex: term } }, { location: { $regex: term } }],
     });
     return res.toArray();
