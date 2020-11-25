@@ -3,12 +3,6 @@ import { ObjectId } from "mongodb";
 import { dbName } from "./database";
 import { client } from "./database";
 
-export class NotFoundError extends Error {
-  constructor(id: String) {
-    super(`${id} not found.`);
-  }
-}
-
 export namespace Item {
   const collectionName = "items";
 

@@ -1,5 +1,3 @@
-export class NoResultsError extends Error {}
-
 export interface Item {
   name: string;
   description: string;
