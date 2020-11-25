@@ -1,5 +1,3 @@
-
-
 ## Mongo
 
 MongoDB is required to run this tool. This can be run using docker:
