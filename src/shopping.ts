@@ -1,25 +1,10 @@
 import { ObjectId } from "mongodb";
 
+import { Item } from '../lib/shopping';
+import { RegisteredItem } from '../lib/shopping';
+
 import { dbName } from "./database";
 import { client } from "./database";
-
-interface Item {
-    name: string;
-    description: string;
-    quantity: number;
-    measure: string;
-}
-
-interface RegisteredItem extends Item {
-    _id: ObjectId,
-    onList: boolean,
-    created: Date,
-    purchased?: Date,
-    deleted?: Date,
-}
-
-export class NoResultsError extends Error {};
-
 
 export namespace Shopping {
     const collectionName = "shopping";
