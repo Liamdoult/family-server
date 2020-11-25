@@ -3,7 +3,8 @@ import { ObjectId } from "mongodb";
 import { dbName } from "./database";
 import { client } from "./database";
 
-import * as StorageLib from "../lib/storage";
+import * as StorageLib from "./lib/storage";
+import { NotFoundError } from "./lib/errors";
 
 export namespace Item {
   const collectionName = "items";

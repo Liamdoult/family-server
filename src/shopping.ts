@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
-import { Item } from "../lib/shopping";
-import { RegisteredItem } from "../lib/shopping";
+import { Item } from "./lib/shopping";
+import { RegisteredItem } from "./lib/shopping";
 
 import { dbName } from "./database";
 import { client } from "./database";

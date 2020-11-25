@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { Response } from "express";
 
-import { Shopping } from "../shopping";
+import * as Shopping from "../shopping";
 
 export async function getAll(_: Request, response: Response) {
   console.log("GET /shopping");

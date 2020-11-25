@@ -11,7 +11,7 @@ export interface RegisteredItem extends Item {
 }
 
 export interface Box {
-  items: Item.RegisteredItem[];
+  items: RegisteredItem[];
   location: string;
   label: string;
 }

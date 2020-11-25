@@ -1,9 +1,11 @@
 import { Request } from "express";
 import { Response } from "express";
 
+import { RegisteredItem } from "../lib/storage";
+import { NotFoundError } from "../lib/errors";
+
 import { Box } from "../storage";
 import { Item } from "../storage";
-import { NotFoundError } from "../storage";
 
 export async function createBox(request: Request, response: Response) {
   console.log("POST /storage/box");
@@ -19,7 +21,7 @@ export async function createBox(request: Request, response: Response) {
       items: [],
     });
     if (json.items) {
-      const items: Item.RegisteredItem[] = await Promise.all(
+      const items: RegisteredItem[] = await Promise.all(
         json.items.map(Item.getItem)
       );
       await Box.addItems(box, json.items);
@@ -43,7 +45,7 @@ export async function updateBox(request: Request, response: Response) {
   if (!json.box) return response.status(400).send("Invalid Request");
   if (!json.items) return response.status(400).send("Invalid Request");
   try {
-    const items: Item.RegisteredItem[] = await Promise.all(
+    const items: RegisteredItem[] = await Promise.all(
       json.items.map(Item.getItem)
     );
     await Box.addItems(json.box, items);
