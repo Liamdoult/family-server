@@ -16,6 +16,7 @@ api.patch("/storage/box", StorageAPI.updateBox);
 api.get("/storage/box", StorageAPI.getBox);
 api.get("/storage/item", StorageAPI.getItem);
 api.get("/storage/search", StorageAPI.search);
+api.delete("/storage/box/items", StorageAPI.deleteBoxItems);
 
 // SHOPPING
 api.get("/shopping", ShoppingAPI.getAll);

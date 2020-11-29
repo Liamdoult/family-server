@@ -77,6 +77,16 @@ export namespace Item {
   }
 
   /**
+   * Remove related ids from database.
+   */
+  export async function removeMany(ids: Array<string>) {
+    const collection = client.db(dbName).collection(collectionName);
+    await collection.remove({
+      _id: { $in: ids.map((id) => new ObjectId(id)) },
+    });
+  }
+
+  /**
    * SearchStorageLib.Items by name and description.
    *
    * @param term Search term used to find items.
@@ -176,6 +186,29 @@ export namespace Box {
       created: new Date(res.created).toISOString(),
       updated: res.updated.map((d: number) => new Date(d).toISOString()),
     };
+  }
+
+  /**
+   * Remove items from a box.
+   *
+   * If the id does not match an id in the box, it is ignored.
+   *
+   * @param boxId Identifier for the box.
+   * @param itemIds A list of ids to remove from the box.
+   * @return Updated box object.
+   */
+  export async function removeItem(
+    boxId: string,
+    itemIds: Array<string>
+  ): Promise<StorageLib.Box> {
+    const collection = client.db(dbName).collection(collectionName);
+    const res = await collection.updateOne(
+      { _id: new ObjectId(boxId) },
+      { $pullAll: { items: itemIds.map((id) => new ObjectId(id)) } }
+    );
+    if (res.modifiedCount !== 1) throw new Error("No boxes updated");
+    await Item.removeMany(itemIds);
+    return await get(boxId);
   }
 
   /**

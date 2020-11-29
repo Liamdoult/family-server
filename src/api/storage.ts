@@ -104,6 +104,25 @@ export async function getItem(request: Request, response: Response) {
   }
 }
 
+export async function deleteBoxItems(request: Request, response: Response) {
+  console.log("DELETE /storage/box");
+  const json = request.body;
+  if (!json.boxId) return response.status(400).send("Invalid Request");
+  if (!json.items) return response.status(400).send("Invalid Request");
+  try {
+    const updatedBox = await Box.removeItem(json.boxId, json.items);
+    return response.status(200).json(updatedBox);
+  } catch (err) {
+    switch (err.constructor) {
+      case NotFoundError:
+        return response.status(400).send("Invalid Request");
+      default:
+        console.log(err);
+        return response.status(500).send("Unknown Server Issue");
+    }
+  }
+}
+
 export async function search(request: Request, response: Response) {
   console.log("GET /storage/search");
   if (!request.query) return response.status(400).send("Invalid Request");
