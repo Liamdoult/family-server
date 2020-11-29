@@ -42,14 +42,15 @@ export async function createBox(request: Request, response: Response) {
 export async function updateBox(request: Request, response: Response) {
   console.log("PATCH /storage/box");
   const json = request.body;
-  if (!json.box) return response.status(400).send("Invalid Request");
+  if (!json.boxId) return response.status(400).send("Invalid Request");
   if (!json.items) return response.status(400).send("Invalid Request");
   try {
     const items: RegisteredItem[] = await Promise.all(
       json.items.map(Item.getItem)
     );
-    await Box.addItems(json.box, items);
-    return response.status(200).json({});
+    await Box.addItems(json.boxId, items);
+    const box = await Box.get(json.boxId);
+    return response.status(200).json(box);
   } catch (err) {
     switch (err.constructor) {
       case NotFoundError:
