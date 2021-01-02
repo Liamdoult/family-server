@@ -44,4 +44,12 @@ export namespace Box {
     if (res.status === 200) return res.json();
     throw new Error("Unknown issue raise by the server");
   }
+
+  export async function get(_id: string): Promise<Registered> {
+    const res = await fetch(`${url}/storage/box?id=${_id}`, {
+      method: "get",
+    });
+    if (res.status === 200) return res.json();
+    throw new Error("Unknown issue raise by the server");
+  }
 }
