@@ -14,6 +14,14 @@ export namespace Item {
     _id: string;
     created: string;
   }
+
+  export async function get(_id: string): Promise<Registered> {
+    const res = await fetch(`${url}/storage/item?id=${_id}`, {
+      method: "get",
+    });
+    if (res.status === 200) return res.json();
+    throw new Error("Unknown issue raise by the server");
+  }
 }
 
 export namespace Box {
