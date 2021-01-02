@@ -1,23 +1,27 @@
-export interface Item {
-  name: string;
-  description: string;
-  owner: string | undefined;
-  quantity: Number | undefined;
+export namespace Item {
+  export interface Base {
+    name: string;
+    description?: string;
+    owner?: string;
+    quantity?: Number;
+  }
+
+  export interface Registered {
+    _id: string;
+    created: string;
+  }
 }
 
-export interface RegisteredItem extends Item {
-  _id: string;
-  created: string;
-}
+export namespace Box {
+  export interface Base {
+    location: string;
+    label: string;
+  }
 
-export interface Box {
-  items: RegisteredItem[];
-  location: string;
-  label: string;
-}
-
-export interface RegisteredBox extends Box {
-  _id: string;
-  created: string;
-  updated: string[];
+  export interface Registered extends Base {
+    _id: string;
+    items: RegisteredItem[];
+    created: string;
+    updated: string[];
+  }
 }
