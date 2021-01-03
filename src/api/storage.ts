@@ -2,7 +2,7 @@ import { Request } from "express";
 import { Response } from "express";
 
 import { Item } from "../lib/storage";
-import { NotFoundError } from "../lib/errors";
+import * as errors from "../lib/errors";
 
 import * as storage from "../storage";
 
@@ -25,7 +25,7 @@ export async function createBox(request: Request, response: Response) {
     response.json(box);
   } catch (err) {
     switch (err.constructor) {
-      case NotFoundError:
+      case errors.NotFoundError:
         return response.status(400).send("Invalid Request");
       default:
         console.log(err);
@@ -48,7 +48,7 @@ export async function updateBox(request: Request, response: Response) {
     return response.status(200).json(box);
   } catch (err) {
     switch (err.constructor) {
-      case NotFoundError:
+      case errors.NotFoundError:
         return response.status(400).send("Invalid Request");
       default:
         console.log(err);
@@ -69,8 +69,8 @@ export async function getBox(request: Request, response: Response) {
     return response.status(200).json(box);
   } catch (err) {
     switch (err.constructor) {
-      case NotFoundError:
-        return response.status(400).send("Invalid Request");
+      case errors.NotFoundError:
+        return response.status(404).send("Not Found.");
       default:
         console.log(err);
         return response.status(500).send("Unknown Server Issue");
@@ -90,7 +90,7 @@ export async function getItem(request: Request, response: Response) {
     return response.status(200).json(item);
   } catch (err) {
     switch (err.constructor) {
-      case NotFoundError:
+      case errors.NotFoundError:
         return response.status(400).send("Invalid Request");
       default:
         console.log(err);
@@ -109,7 +109,7 @@ export async function deleteBoxItems(request: Request, response: Response) {
     return response.status(200).json(updatedBox);
   } catch (err) {
     switch (err.constructor) {
-      case NotFoundError:
+      case errors.NotFoundError:
         return response.status(400).send("Invalid Request");
       default:
         console.log(err);

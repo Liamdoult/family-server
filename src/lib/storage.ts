@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import * as errors from "./errors";
 
 const url = process.env.BASEURL || "http://localhost:8080";
 
@@ -103,6 +104,7 @@ export namespace Box {
       method: "get",
     });
     if (res.status === 200) return new Registered(await res.json());
+    if (res.status === 404) throw new errors.NotFoundError(_id);
     throw new Error("Unknown issue raise by the server");
   }
 }

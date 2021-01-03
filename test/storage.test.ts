@@ -8,6 +8,7 @@ import ChaiAsPromised from "chai-as-promised";
 import api from "../src/api";
 import { dbClient } from "../src/database";
 import { Box } from "../src/lib/storage";
+import * as errors from "../src/lib/errors";
 
 import * as data from "../mocks/data/storage";
 
@@ -43,6 +44,12 @@ describe("Box", () => {
         const result = await Box.get(box._id.toHexString());
         expect(result.label).to.equal(box.label);
       });
+    });
+
+    it(`NotFound`, async () => {
+      await expect(Box.get("5fb6924cc65ca0101736bbc3")).to.be.rejectedWith(
+        errors.NotFoundError
+      );
     });
   });
 });
