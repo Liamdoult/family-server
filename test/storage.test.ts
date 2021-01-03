@@ -46,7 +46,7 @@ describe("Box", () => {
       });
     });
 
-    ["5fb6924cc65ca0101736bbc3", "a"].forEach((_id) => {
+    ["5fb6924cc65ca0101736bbc3", "", "a"].forEach((_id) => {
       it(`NotFound "${_id}"`, async () => {
         await expect(Box.get(_id)).to.be.rejectedWith(errors.NotFoundError);
       });

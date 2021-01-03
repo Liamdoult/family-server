@@ -107,6 +107,7 @@ export namespace Box {
    * @throws NotFoundError Server has not found a box with an exact match.
    */
   export async function get(_id: string): Promise<Registered> {
+    if (_id === "") throw new errors.NotFoundError(_id);
     const res = await fetch(`${url}/storage/box?id=${_id}`, {
       method: "get",
     });
