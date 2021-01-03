@@ -175,8 +175,19 @@ export namespace Box {
    * @param id Identification for the box
    */
   export async function get(id: String): Promise<StorageLib.Box.Registered> {
+    let _id;
+    try {
+      _id = new ObjectId(id as string);
+    } catch (err) {
+      if (
+        err.message ===
+        "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters"
+      )
+        throw new NotFoundError(id);
+      throw err;
+    }
     const collection = dbClient.db(dbName).collection(collectionName);
-    const res = await collection.findOne({ _id: new ObjectId(id as string) });
+    const res = await collection.findOne({ _id });
     if (!res) throw new NotFoundError(id);
     if (res.items) {
       res.items = await Item.getMany(res.items);
