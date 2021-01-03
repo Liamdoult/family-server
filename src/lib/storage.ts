@@ -37,6 +37,24 @@ export namespace Box {
     updated: string[];
   }
 
+  export class Registered implements Registered {
+    constructor(registeredBox: Registered) {
+      Object.assign(this, registeredBox);
+    }
+
+    async rename(name: string) {
+      // TODO
+    }
+
+    async addItem(item: Item.Base | Item.Registered) {
+      // TODO
+    }
+
+    async addItems(items: Array<Item.Base | Item.Registered>) {
+      // TODO
+    }
+  }
+
   export async function register(
     location: string,
     label: string,
@@ -57,7 +75,7 @@ export namespace Box {
     const res = await fetch(`${url}/storage/box?id=${_id}`, {
       method: "get",
     });
-    if (res.status === 200) return res.json();
+    if (res.status === 200) return new Registered(await res.json());
     throw new Error("Unknown issue raise by the server");
   }
 }
