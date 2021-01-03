@@ -10,7 +10,7 @@ export namespace Item {
     quantity?: Number;
   }
 
-  export interface Registered {
+  export interface Registered extends Base {
     _id: string;
     created: string;
   }
@@ -25,6 +25,12 @@ export namespace Item {
 }
 
 export namespace Box {
+  interface _Partial {
+    location?: string;
+    label?: string;
+    description?: string;
+  }
+
   export interface Base {
     location: string;
     label: string;
@@ -43,16 +49,28 @@ export namespace Box {
       Object.assign(this, registeredBox);
     }
 
-    async rename(name: string) {
-      // TODO
+    private async update(update: _Partial) {
+      const res = await fetch(`${url}/storage/box`, {
+        method: "patch",
+        body: JSON.stringify(update),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status === 200) Object.assign(this, update);
+      throw new Error("Unknown issue raise by the server");
+    }
+
+    async relabel(label: string) {
+      await this.update({ label });
     }
 
     async move(location: string) {
-      // TODO
+      await this.update({ location });
     }
 
     async description(description: string) {
-      // TODO
+      await this.update({ description });
     }
 
     async addItem(item: Item.Base | Item.Registered) {
@@ -76,7 +94,7 @@ export namespace Box {
         "Content-Type": "application/json",
       },
     });
-    if (res.status === 200) return res.json();
+    if (res.status === 200) return await res.json();
     throw new Error("Unknown issue raise by the server");
   }
 
