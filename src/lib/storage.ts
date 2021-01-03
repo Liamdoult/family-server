@@ -69,7 +69,7 @@ export namespace Box {
       await this.update({ location });
     }
 
-    async description(description: string) {
+    async updateDescription(description: string) {
       await this.update({ description });
     }
 
