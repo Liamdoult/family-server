@@ -28,6 +28,7 @@ export namespace Box {
   export interface Base {
     location: string;
     label: string;
+    description?: string;
   }
 
   export interface Registered extends Base {
@@ -43,6 +44,14 @@ export namespace Box {
     }
 
     async rename(name: string) {
+      // TODO
+    }
+
+    async move(location: string) {
+      // TODO
+    }
+
+    async description(description: string) {
       // TODO
     }
 
