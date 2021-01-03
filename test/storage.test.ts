@@ -25,19 +25,18 @@ after(async () => {
   await dbClient.close();
 });
 
+beforeEach(async () => {
+  const database = dbClient.db("test");
+
+  await database.collection("boxes").insertMany(data.database.box);
+});
+
+afterEach(async () => {
+  const database = dbClient.db("test");
+  await database.dropDatabase();
+});
+
 describe("Box", () => {
-  beforeEach(async () => {
-    const database = dbClient.db("test");
-
-    const collection = database.collection("box");
-    await collection.insertMany(data.database.box);
-  });
-
-  afterEach(async () => {
-    const database = dbClient.db("test");
-    await database.dropDatabase();
-  });
-
   describe("get", () => {
     data.database.box.forEach((box) => {
       it(`${box.label}`, async () => {
