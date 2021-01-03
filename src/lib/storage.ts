@@ -99,6 +99,13 @@ export namespace Box {
     throw new Error("Unknown issue raise by the server");
   }
 
+  /**
+   * Get a box by its id
+   *
+   * @param _id Unique hex identifier of the box.
+   * @returns Box with matching _id.
+   * @throws NotFoundError Server has not found a box with an exact match.
+   */
   export async function get(_id: string): Promise<Registered> {
     const res = await fetch(`${url}/storage/box?id=${_id}`, {
       method: "get",
