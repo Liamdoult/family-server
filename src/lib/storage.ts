@@ -190,13 +190,13 @@ export namespace Box {
   }
 
   export async function register(
-    location: string,
-    label: string,
+    box: Base,
     items: Array<Item.Base | Item.Registered>
   ): Promise<Registered> {
+    box = validateBase(box);
     const res = await fetch(`${url}/storage/box`, {
       method: "post",
-      body: JSON.stringify({ location, label, items }),
+      body: JSON.stringify({ ...box, items }),
       headers: {
         "Content-Type": "application/json",
       },

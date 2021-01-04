@@ -15,7 +15,7 @@ export async function createBox(request: Request, response: Response) {
 
   try {
     const box = await storage.Box.register(json);
-    if (json.items) {
+    if (json.items && json.items.length > 0) {
       const items: Item.Registered[] = await Promise.all(
         json.items.map(storage.Item.getItem)
       );

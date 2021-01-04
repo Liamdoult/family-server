@@ -91,3 +91,24 @@ describe("Box", () => {
     });
   });
 });
+
+describe("register", () => {
+  describe("valid", () => {
+    data.box.base.valid.forEach((box) => {
+      it(`${box.label}`, async () => {
+        const result = await Box.register(box, []);
+        expect(result.label).to.equal(box.label);
+      });
+    });
+  });
+
+  describe("invalid", () => {
+    data.box.base.invalid.forEach((box) => {
+      it(`${box.label}`, async () => {
+        await expect(Box.register(box as Box.Base, [])).to.be.rejectedWith(
+          errors.ValueError
+        );
+      });
+    });
+  });
+});
