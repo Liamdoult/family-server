@@ -209,6 +209,45 @@ export const box = {
       },
     ],
   },
+  partial: {
+    valid: [
+      {
+        label: "updated label",
+      },
+      {
+        description: "updated description",
+      },
+      {
+        location: "updated location",
+      },
+      {
+        label: "updated all",
+        description: "updated all",
+        location: "updated all",
+      },
+      {},
+      {
+        description: "",
+      },
+    ],
+    invalid: [
+      {
+        label: {},
+      },
+      {
+        description: {},
+      },
+      {
+        location: {},
+      },
+      {
+        label: "",
+      },
+      {
+        location: "",
+      },
+    ],
+  },
 };
 
 export const database = {

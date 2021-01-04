@@ -51,7 +51,9 @@ export namespace Box {
     }
 
     private async update(update: _Partial) {
-      const res = await fetch(`${url}/storage/box`, {
+      update = validatePartial(update);
+      if (update === {}) return;
+      const res = await fetch(`${url}/storage/box?id=${this._id}`, {
         method: "patch",
         body: JSON.stringify(update),
         headers: {
@@ -81,6 +83,46 @@ export namespace Box {
     async addItems(items: Array<Item.Base | Item.Registered>) {
       // TODO
     }
+  }
+
+  /**
+   * Validate a partial object fields.
+   *
+   * This should be performed before and after data is sent to the server.
+   *
+   * __This function creates a **NEW** object. This is to ensure that no other
+   * un-accounted for values are attached to the object.__ Thus, if you use
+   * this function, use the returned object and not the existing object (the
+   * one you passed into the function).
+   *
+   * If validating a `Registered` object, use `validateRegistered`.
+   *
+   * @param box The base box to validate.
+   * @returns A new validated base box object.
+   * @throws ValueError A field is invalid.
+   */
+  export function validatePartial(box: any): _Partial {
+    let validatedBox: any = {};
+
+    if ("label" in box) {
+      if (typeof box.label !== "string" || box.label === "")
+        throw new errors.ValueError("label");
+      validatedBox.label = box.label;
+    }
+
+    if ("location" in box) {
+      if (typeof box.location !== "string" || box.location === "")
+        throw new errors.ValueError("location");
+      validatedBox.location = box.location;
+    }
+
+    if ("description" in box) {
+      if (typeof box.description !== "string")
+        throw new errors.ValueError("description");
+      validatedBox.description = box.description;
+    }
+
+    return validatedBox as _Partial;
   }
 
   /**
