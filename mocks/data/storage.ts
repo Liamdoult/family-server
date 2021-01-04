@@ -48,6 +48,96 @@ export const item = {
       },
     ],
   },
+  registered: {
+    valid: [
+      {
+        name: "Spare wheel",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+      },
+      {
+        name: "Spoke",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+        description: "replacement spoke for my bike",
+      },
+      {
+        name: "Spoke",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+        description: "",
+      },
+      {
+        name: "new grips",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+        owner: "Liam",
+      },
+      {
+        name: "peddles",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+        quantity: 2,
+      },
+      {
+        name: "Shoes",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+        description: "Scott",
+        owner: "liam",
+        quantity: 1,
+      },
+    ],
+    invalid: [
+      {},
+      {
+        name: {},
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+      },
+      {
+        name: "empty owner name",
+        owner: "owner",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+      },
+      {
+        name: "invalid owner name type",
+        owner: {},
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+      },
+      {
+        name: "string quantity",
+        quantity: "2",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: new Date(1605800524626),
+      },
+      {
+        name: "No ID",
+        created: new Date(1605800524626),
+      },
+      {
+        name: "Invalid Id length",
+        _id: "5fb69",
+        created: new Date(1605800524626),
+      },
+      {
+        name: "Invalid id Type",
+        _id: {},
+        created: new Date(1605800524626),
+      },
+      {
+        name: "No Created timestamp",
+        _id: "5fb6924cc65ca0101736bbc4",
+      },
+      {
+        name: "Invalid timestamp type",
+        _id: "5fb6924cc65ca0101736bbc4",
+        created: {},
+      },
+    ],
+  },
 };
 
 export const box = {

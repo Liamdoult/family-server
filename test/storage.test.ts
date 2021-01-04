@@ -39,7 +39,7 @@ async function cleanDB() {
 
 describe("Item", () => {
   describe("validation", () => {
-    describe("Partial", () => {
+    describe("Base", () => {
       describe("valid", () => {
         data.item.base.valid.forEach((item) => {
           it(`${item.name}`, () => {
@@ -50,6 +50,24 @@ describe("Item", () => {
 
       describe("invalid", () => {
         data.item.base.invalid.forEach((item) => {
+          it(`${item.name}`, () => {
+            expect(!Item.validateBase(Item));
+          });
+        });
+      });
+    });
+
+    describe("Registered", () => {
+      describe("valid", () => {
+        data.item.registered.valid.forEach((item) => {
+          it(`${item.name}`, () => {
+            expect(Item.validateBase(item));
+          });
+        });
+      });
+
+      describe("invalid", () => {
+        data.item.registered.invalid.forEach((item) => {
           it(`${item.name}`, () => {
             expect(!Item.validateBase(Item));
           });
