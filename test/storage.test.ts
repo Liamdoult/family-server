@@ -88,6 +88,17 @@ describe("Box", () => {
         expect(box.label).to.equal("new label");
         expect((await Box.get(testBox._id)).label).to.equal("new label");
       });
+
+      it("move", async () => {
+        let testBox = {
+          ...data.database.box[0],
+          _id: data.database.box[0]._id.toHexString(),
+        };
+        const box = new Box.Registered(testBox);
+        await box.move("bathroom");
+        expect(box.location).to.equal("bathroom");
+        expect((await Box.get(testBox._id)).location).to.equal("bathroom");
+      });
     });
   });
 
