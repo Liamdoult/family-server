@@ -5,6 +5,10 @@ import * as errors from "./errors";
 const url = process.env.BASEURL || "http://localhost:8080";
 const ajv = new Ajv();
 
+ajv.addFormat("date", (date: any) => {
+  return !isNaN(Date.parse(date));
+});
+
 export namespace Item {
   export interface Base {
     name: string;
@@ -29,6 +33,20 @@ export namespace Item {
     _id: string;
     created: string;
   }
+
+  export const validateRegistered = ajv.compile({
+    type: "object",
+    properties: {
+      name: { type: "string", minLength: 1 },
+      description: { type: "string" },
+      owner: { type: "string", minLength: 1 },
+      quantity: { type: "number", minimum: 0 },
+      _id: { type: "string", minLength: 24 },
+      created: { type: "string", format: "date" },
+    },
+    required: ["name", "_id", "created"],
+    additionalProperties: false,
+  } as JSONSchemaType<Registered>);
 
   export async function get(_id: string): Promise<Registered> {
     const res = await fetch(`${url}/storage/item?id=${_id}`, {
@@ -77,8 +95,8 @@ export namespace Box {
   export interface Registered extends Base {
     _id: string;
     items: Item.Registered[];
-    created: Date;
-    updated: Date[];
+    created: string;
+    updated: string[];
   }
 
   export class Registered implements Registered {

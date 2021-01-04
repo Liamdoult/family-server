@@ -122,8 +122,8 @@ export namespace Box {
     });
     return {
       _id: res.insertedId,
-      created: now,
-      updated: [] as Date[],
+      created: now.toISOString(),
+      updated: [] as string[],
       ...box,
     } as StorageLib.Box.Registered;
   }
