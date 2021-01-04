@@ -95,6 +95,54 @@ describe("Item", () => {
         });
       });
     });
+
+    describe("update", () => {
+      it("rename", async () => {
+        let testBox = {
+          ...data.database.item[0],
+          _id: data.database.item[0]._id.toHexString(),
+        };
+        const item = new Item.Registered(testBox);
+        await item.rename("new name");
+        expect(item.name).to.equal("new name");
+        expect((await Item.get(testBox._id)).name).to.equal("new name");
+      });
+
+      it("updateQuantity", async () => {
+        let testBox = {
+          ...data.database.item[0],
+          _id: data.database.item[0]._id.toHexString(),
+        };
+        const item = new Item.Registered(testBox);
+        await item.updateQuantity(4);
+        expect(item.quantity).to.equal(4);
+        expect((await Item.get(testBox._id)).quantity).to.equal(4);
+      });
+
+      it("updateDescription", async () => {
+        let testBox = {
+          ...data.database.item[0],
+          _id: data.database.item[0]._id.toHexString(),
+        };
+        const item = new Item.Registered(testBox);
+        await item.updateDescription("new description");
+        expect(item.description).to.equal("new description");
+        expect((await Item.get(testBox._id)).description).to.equal(
+          "new description"
+        );
+      });
+
+      it("updateOwner", async () => {
+        let testBox = {
+          ...data.database.item[0],
+          _id: data.database.item[0]._id.toHexString(),
+        };
+        const item = new Item.Registered(testBox);
+        await item.updateOwner("Martina");
+        expect(item.owner).to.equal("Martina");
+        expect((await Item.get(testBox._id)).owner).to.equal("Martina");
+      });
+    });
   });
 });
 
