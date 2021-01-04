@@ -71,4 +71,23 @@ describe("Box", () => {
       });
     });
   });
+
+  describe("validateRegistered", () => {
+    describe("valid", () => {
+      data.box.registered.valid.forEach((box) => {
+        it(`${box.label}`, async () => {
+          const result = Box.validateRegistered(box);
+          expect(result.label).to.equal(box.label);
+        });
+      });
+    });
+
+    describe("invalid", () => {
+      data.box.registered.invalid.forEach((box) => {
+        it(`${box.label}`, () => {
+          expect(() => Box.validateRegistered(box)).to.throw(errors.ValueError);
+        });
+      });
+    });
+  });
 });
