@@ -1,5 +1,55 @@
 import { ObjectId } from "mongodb";
 
+export const item = {
+  base: {
+    valid: [
+      {
+        name: "Spare wheel",
+      },
+      {
+        name: "Spoke",
+        description: "replacement spoke for my bike",
+      },
+      {
+        name: "Spoke",
+        description: "",
+      },
+      {
+        name: "new grips",
+        owner: "Liam",
+      },
+      {
+        name: "peddles",
+        quantity: 2,
+      },
+      {
+        name: "Shoes",
+        description: "Scott",
+        owner: "liam",
+        quantity: 1,
+      },
+    ],
+    invalid: [
+      {},
+      {
+        name: {},
+      },
+      {
+        name: "empty owner name",
+        owner: "owner",
+      },
+      {
+        name: "invalid owner name type",
+        owner: {},
+      },
+      {
+        name: "string quantity",
+        quantity: "2",
+      },
+    ],
+  },
+};
+
 export const box = {
   base: {
     valid: [

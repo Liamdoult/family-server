@@ -8,6 +8,7 @@ import ChaiAsPromised from "chai-as-promised";
 import api from "../src/api";
 import { dbClient } from "../src/database";
 import { Box } from "../src/lib/storage";
+import { Item } from "../src/lib/storage";
 import * as errors from "../src/lib/errors";
 
 import * as data from "../mocks/data/storage";
@@ -35,6 +36,28 @@ async function cleanDB() {
   const database = dbClient.db("test");
   await database.dropDatabase();
 }
+
+describe("Item", () => {
+  describe("validation", () => {
+    describe("Partial", () => {
+      describe("valid", () => {
+        data.item.base.valid.forEach((item) => {
+          it(`${item.name}`, () => {
+            expect(Item.validateBase(item));
+          });
+        });
+      });
+
+      describe("invalid", () => {
+        data.item.base.invalid.forEach((item) => {
+          it(`${item.name}`, () => {
+            expect(!Item.validateBase(Item));
+          });
+        });
+      });
+    });
+  });
+});
 
 describe("Box", () => {
   describe("Requires DB", () => {
