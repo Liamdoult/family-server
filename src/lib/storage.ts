@@ -68,6 +68,7 @@ export namespace Box {
       await this.update({ label });
     }
 
+    /** Updates box location **/
     async move(location: string) {
       await this.update({ location });
     }
