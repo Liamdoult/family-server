@@ -189,6 +189,11 @@ export namespace Box {
     return validatedBox as Registered;
   }
 
+  /**
+   * Register a new Box and attach items.
+   *
+   * If the Items do not exist, it will register new items.
+   */
   export async function register(
     box: Base,
     items: Array<Item.Base | Item.Registered>
