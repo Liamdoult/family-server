@@ -26,29 +26,54 @@ after(async () => {
   await dbClient.close();
 });
 
-beforeEach(async () => {
+async function initDB() {
   const database = dbClient.db("test");
-
   await database.collection("boxes").insertMany(data.database.box);
-});
+}
 
-afterEach(async () => {
+async function cleanDB() {
   const database = dbClient.db("test");
   await database.dropDatabase();
-});
+}
 
 describe("Box", () => {
-  describe("get", () => {
-    data.database.box.forEach((box) => {
-      it(`${box.label}`, async () => {
-        const result = await Box.get(box._id.toHexString());
-        expect(result.label).to.equal(box.label);
+  describe("Requires DB", () => {
+    beforeEach(initDB);
+    afterEach(cleanDB);
+
+    describe("get", () => {
+      data.database.box.forEach((box) => {
+        it(`${box.label}`, async () => {
+          const result = await Box.get(box._id.toHexString());
+          expect(result.label).to.equal(box.label);
+        });
+      });
+
+      ["5fb6924cc65ca0101736bbc3", "", "a"].forEach((_id) => {
+        it(`NotFound "${_id}"`, async () => {
+          await expect(Box.get(_id)).to.be.rejectedWith(errors.NotFoundError);
+        });
       });
     });
 
-    ["5fb6924cc65ca0101736bbc3", "", "a"].forEach((_id) => {
-      it(`NotFound "${_id}"`, async () => {
-        await expect(Box.get(_id)).to.be.rejectedWith(errors.NotFoundError);
+    describe("register", () => {
+      describe("valid", () => {
+        data.box.base.valid.forEach((box) => {
+          it(`${box.label}`, async () => {
+            const result = await Box.register(box, []);
+            expect(result.label).to.equal(box.label);
+          });
+        });
+      });
+
+      describe("invalid", () => {
+        data.box.base.invalid.forEach((box) => {
+          it(`${box.label}`, async () => {
+            await expect(Box.register(box as Box.Base, [])).to.be.rejectedWith(
+              errors.ValueError
+            );
+          });
+        });
       });
     });
   });
@@ -112,27 +137,6 @@ describe("Box", () => {
               errors.ValueError
             );
           });
-        });
-      });
-    });
-  });
-
-  describe("register", () => {
-    describe("valid", () => {
-      data.box.base.valid.forEach((box) => {
-        it(`${box.label}`, async () => {
-          const result = await Box.register(box, []);
-          expect(result.label).to.equal(box.label);
-        });
-      });
-    });
-
-    describe("invalid", () => {
-      data.box.base.invalid.forEach((box) => {
-        it(`${box.label}`, async () => {
-          await expect(Box.register(box as Box.Base, [])).to.be.rejectedWith(
-            errors.ValueError
-          );
         });
       });
     });
