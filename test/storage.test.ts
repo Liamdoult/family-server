@@ -99,6 +99,19 @@ describe("Box", () => {
         expect(box.location).to.equal("bathroom");
         expect((await Box.get(testBox._id)).location).to.equal("bathroom");
       });
+
+      it("updateDescription", async () => {
+        let testBox = {
+          ...data.database.box[0],
+          _id: data.database.box[0]._id.toHexString(),
+        };
+        const box = new Box.Registered(testBox);
+        await box.updateDescription("stores my shit");
+        expect(box.description).to.equal("stores my shit");
+        expect((await Box.get(testBox._id)).description).to.equal(
+          "stores my shit"
+        );
+      });
     });
   });
 
