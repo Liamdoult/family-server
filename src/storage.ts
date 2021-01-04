@@ -100,6 +100,15 @@ export namespace Item {
     });
     return res.toArray();
   }
+
+  export async function update(_id: string, item: StorageLib.Item.Partial) {
+    const collection = dbClient.db(dbName).collection(collectionName);
+    const res = await collection.updateOne(
+      { _id: new ObjectId(_id) },
+      { $set: item }
+    );
+    if (res.modifiedCount !== 1) throw new Error("No boxes updated");
+  }
 }
 
 export namespace Box {
@@ -128,10 +137,7 @@ export namespace Box {
     } as StorageLib.Box.Registered;
   }
 
-  export async function update(
-    _id: string,
-    box: StorageLib.Box.Partial
-  ): Promise<StorageLib.Box.Registered> {
+  export async function update(_id: string, box: StorageLib.Box.Partial) {
     const collection = dbClient.db(dbName).collection(collectionName);
     const res = await collection.updateOne(
       { _id: new ObjectId(_id) },

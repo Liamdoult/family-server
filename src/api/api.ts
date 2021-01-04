@@ -15,6 +15,7 @@ api.post("/storage/box", StorageAPI.createBox);
 api.patch("/storage/box", StorageAPI.updateBox);
 api.get("/storage/box", StorageAPI.getBox);
 api.get("/storage/item", StorageAPI.getItem);
+api.patch("/storage/item", StorageAPI.updateItem);
 api.get("/storage/search", StorageAPI.search);
 api.delete("/storage/box/items", StorageAPI.deleteBoxItems);
 
