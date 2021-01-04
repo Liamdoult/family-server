@@ -26,7 +26,7 @@ export namespace Item {
 }
 
 export namespace Box {
-  interface _Partial {
+  export interface Partial {
     location?: string;
     label?: string;
     description?: string;
@@ -41,16 +41,16 @@ export namespace Box {
   export interface Registered extends Base {
     _id: string;
     items: Item.Registered[];
-    created: string;
-    updated: string[];
+    created: Date;
+    updated: Date[];
   }
 
   export class Registered implements Registered {
-    constructor(registeredBox: Registered) {
+    constructor(registeredBox: any) {
       Object.assign(this, registeredBox);
     }
 
-    private async update(update: _Partial) {
+    private async update(update: Partial) {
       update = validatePartial(update);
       if (update === {}) return;
       const res = await fetch(`${url}/storage/box?id=${this._id}`, {
@@ -60,7 +60,7 @@ export namespace Box {
           "Content-Type": "application/json",
         },
       });
-      if (res.status === 200) Object.assign(this, update);
+      if (res.status === 200) return Object.assign(this, update);
       throw new Error("Unknown issue raise by the server");
     }
 
@@ -101,7 +101,7 @@ export namespace Box {
    * @returns A new validated base box object.
    * @throws ValueError A field is invalid.
    */
-  export function validatePartial(box: any): _Partial {
+  export function validatePartial(box: any): Partial {
     let validatedBox: any = {};
 
     if ("label" in box) {
@@ -122,7 +122,7 @@ export namespace Box {
       validatedBox.description = box.description;
     }
 
-    return validatedBox as _Partial;
+    return validatedBox as Partial;
   }
 
   /**

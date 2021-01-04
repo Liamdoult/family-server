@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { Response } from "express";
 
-import { Item } from "../lib/storage";
+import { Item, Box } from "../lib/storage";
 import * as errors from "../lib/errors";
 
 import * as storage from "../storage";
@@ -37,17 +37,26 @@ export async function createBox(request: Request, response: Response) {
 export async function updateBox(request: Request, response: Response) {
   // console.log("PATCH /storage/box");
   const json = request.body;
-  if (!json.boxId) return response.status(400).send("Invalid Request");
-  if (!json.items) return response.status(400).send("Invalid Request");
+  if (!request.query) return response.status(400).send("Invalid Request");
+  if (!request.query.id) return response.status(400).send("Invalid Request");
+  const id = request.query.id as string;
   try {
-    const items: Item.Registered[] = await Promise.all(
-      json.items.map(storage.Item.getItem)
-    );
-    await storage.Box.addItems(json.boxId, items);
-    const box = await storage.Box.get(json.boxId);
+    const update = Box.validatePartial(json);
+    /* TODO add Items
+    if (update.items) {
+        const items: Item.Registered[] = await Promise.all(
+          json.items.map(storage.Item.getItem)
+        );
+        await storage.Box.addItems(id, items);
+    }
+    */
+    await storage.Box.update(id, update);
+    const box = await storage.Box.get(id);
     return response.status(200).json(box);
   } catch (err) {
     switch (err.constructor) {
+      case errors.ValueError:
+        return response.status(400).send("Invalid Request");
       case errors.NotFoundError:
         return response.status(400).send("Invalid Request");
       default:

@@ -122,10 +122,23 @@ export namespace Box {
     });
     return {
       _id: res.insertedId,
-      created: now.toISOString(),
-      updated: [] as string[],
+      created: now,
+      updated: [] as Date[],
       ...box,
     } as StorageLib.Box.Registered;
+  }
+
+  export async function update(
+    _id: string,
+    box: StorageLib.Box.Partial
+  ): Promise<StorageLib.Box.Registered> {
+    const collection = dbClient.db(dbName).collection(collectionName);
+    const res = await collection.updateOne(
+      { _id: new ObjectId(_id) },
+      { $set: box, $push: { updated: new Date() } }
+    );
+    if (res.modifiedCount !== 1) throw new Error("No boxes updated");
+    return new StorageLib.Box.Registered(res.result);
   }
 
   /**
