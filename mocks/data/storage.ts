@@ -405,6 +405,16 @@ export const box = {
 };
 
 export const database = {
+  item: [
+    {
+      _id: new ObjectId("5fe8957351d62da95dafd1ed"),
+      name: "washing machine warranty",
+      description: "",
+      quantity: 1,
+      owner: "",
+      created: new Date("2020-12-27T14:08:51.854Z"),
+    },
+  ],
   box: [
     {
       _id: new ObjectId("5fb6924cc65ca0101736bbc4"),
@@ -412,7 +422,7 @@ export const database = {
       updated: [new Date("2020-11-29T11:44:21.944Z")],
       label: "A1",
       location: "Home Storage",
-      items: [] as string[],
+      items: ["5fe8957351d62da95dafd1ed"] as string[],
     },
   ],
 };

@@ -29,6 +29,7 @@ after(async () => {
 
 async function initDB() {
   const database = dbClient.db("test");
+  await database.collection("items").insertMany(data.database.item);
   await database.collection("boxes").insertMany(data.database.box);
 }
 
@@ -71,6 +72,26 @@ describe("Item", () => {
           it(`${item.name}`, () => {
             expect(!Item.validateBase(Item));
           });
+        });
+      });
+    });
+  });
+
+  describe("Requires DB", () => {
+    beforeEach(initDB);
+    afterEach(cleanDB);
+
+    describe("get", () => {
+      data.database.item.forEach((item) => {
+        it(`${item.name}`, async () => {
+          const result = await Item.get(item._id.toHexString());
+          expect(result.name).to.equal(item.name);
+        });
+      });
+
+      ["5fb6924cc65ca0101736bbc3", "", "a"].forEach((_id) => {
+        it(`NotFound "${_id}"`, async () => {
+          await expect(Box.get(_id)).to.be.rejectedWith(errors.NotFoundError);
         });
       });
     });
