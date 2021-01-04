@@ -36,7 +36,7 @@ export namespace Item {
     quantity?: number;
   }
 
-  export const validateBase = ajv.compile({
+  export const BaseSchema: JSONSchemaType<Base> = {
     type: "object",
     properties: {
       name: { type: "string", minLength: 1 },
@@ -46,14 +46,15 @@ export namespace Item {
     },
     required: ["name"],
     additionalProperties: false,
-  } as JSONSchemaType<Base>);
+  } as JSONSchemaType<Base>;
+  export const validateBase = ajv.compile(BaseSchema);
 
   export interface Registered extends Base {
     _id: string;
     created: string;
   }
 
-  export const validateRegistered = ajv.compile({
+  export const RegisteredSchema: JSONSchemaType<Registered> = {
     type: "object",
     properties: {
       name: { type: "string", minLength: 1 },
@@ -65,7 +66,8 @@ export namespace Item {
     },
     required: ["name", "_id", "created"],
     additionalProperties: false,
-  } as JSONSchemaType<Registered>);
+  } as JSONSchemaType<Registered>;
+  export const validateRegistered = ajv.compile(RegisteredSchema);
 
   export class Registered implements Registered {
     constructor(registeredItem: any) {
@@ -116,6 +118,7 @@ export namespace Box {
     location?: string;
     label?: string;
     description?: string;
+    items?: Array<Item.Base | Item.Registered>;
   }
 
   export const validatePartial = ajv.compile({
@@ -124,6 +127,12 @@ export namespace Box {
       location: { type: "string", minLength: 1 },
       label: { type: "string", minLength: 1 },
       description: { type: "string" },
+      items: {
+        type: "array",
+        items: {
+          anyOf: [Item.RegisteredSchema, Item.BaseSchema],
+        },
+      },
     },
     required: [],
     additionalProperties: false,
