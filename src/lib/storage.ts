@@ -10,6 +10,25 @@ ajv.addFormat("date", (date: any) => {
 });
 
 export namespace Item {
+  export interface Partial {
+    name?: string;
+    owner?: string;
+    quantity?: number;
+    description?: string;
+  }
+
+  export const validatePartial = ajv.compile({
+    type: "object",
+    properties: {
+      name: { type: "string", minLength: 1 },
+      description: { type: "string" },
+      owner: { type: "string", minLength: 1 },
+      quantity: { type: "number", minimum: 0 },
+    },
+    required: [],
+    additionalProperties: false,
+  } as JSONSchemaType<Partial>);
+
   export interface Base {
     name: string;
     description?: string;
@@ -51,6 +70,35 @@ export namespace Item {
   export class Registered implements Registered {
     constructor(registeredItem: any) {
       Object.assign(this, registeredItem);
+    }
+
+    private async update(update: Partial) {
+      if (!validatePartial(update)) throw new errors.ValueError("unknown");
+      const res = await fetch(`${url}/storage/item?id=${this._id}`, {
+        method: "patch",
+        body: JSON.stringify(update),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status === 200) return Object.assign(this, update);
+      throw new Error("Unknown issue raise by the server");
+    }
+
+    async rename(name: string) {
+      await this.update({ name });
+    }
+
+    async updateQuantity(quantity: number) {
+      await this.update({ quantity });
+    }
+
+    async updateDescription(description: string) {
+      await this.update({ description });
+    }
+
+    async updateOwner(owner: string) {
+      await this.update({ owner });
     }
   }
 
