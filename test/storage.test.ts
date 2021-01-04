@@ -98,49 +98,53 @@ describe("Item", () => {
 
     describe("update", () => {
       it("rename", async () => {
-        let testBox = {
+        let testItem = {
           ...data.database.item[0],
           _id: data.database.item[0]._id.toHexString(),
         };
-        const item = new Item.Registered(testBox);
+        const item = new Item.Registered(testItem);
         await item.rename("new name");
+        expect(item.description).to.equal(testItem.description);
         expect(item.name).to.equal("new name");
-        expect((await Item.get(testBox._id)).name).to.equal("new name");
+        expect((await Item.get(testItem._id)).name).to.equal("new name");
       });
 
       it("updateQuantity", async () => {
-        let testBox = {
+        let testItem = {
           ...data.database.item[0],
           _id: data.database.item[0]._id.toHexString(),
         };
-        const item = new Item.Registered(testBox);
+        const item = new Item.Registered(testItem);
+        expect(item.name).to.equal(testItem.name);
         await item.updateQuantity(4);
         expect(item.quantity).to.equal(4);
-        expect((await Item.get(testBox._id)).quantity).to.equal(4);
+        expect((await Item.get(testItem._id)).quantity).to.equal(4);
       });
 
       it("updateDescription", async () => {
-        let testBox = {
+        let testItem = {
           ...data.database.item[0],
           _id: data.database.item[0]._id.toHexString(),
         };
-        const item = new Item.Registered(testBox);
+        const item = new Item.Registered(testItem);
         await item.updateDescription("new description");
+        expect(item.name).to.equal(testItem.name);
         expect(item.description).to.equal("new description");
-        expect((await Item.get(testBox._id)).description).to.equal(
+        expect((await Item.get(testItem._id)).description).to.equal(
           "new description"
         );
       });
 
       it("updateOwner", async () => {
-        let testBox = {
+        let testItem = {
           ...data.database.item[0],
           _id: data.database.item[0]._id.toHexString(),
         };
-        const item = new Item.Registered(testBox);
+        const item = new Item.Registered(testItem);
         await item.updateOwner("Martina");
+        expect(item.name).to.equal(testItem.name);
         expect(item.owner).to.equal("Martina");
-        expect((await Item.get(testBox._id)).owner).to.equal("Martina");
+        expect((await Item.get(testItem._id)).owner).to.equal("Martina");
       });
     });
   });
@@ -195,6 +199,7 @@ describe("Box", () => {
         };
         const box = new Box.Registered(testBox);
         await box.relabel("new label");
+        expect(box.description).to.equal(testBox.description);
         expect(box.label).to.equal("new label");
         expect((await Box.get(testBox._id)).label).to.equal("new label");
       });
@@ -206,6 +211,7 @@ describe("Box", () => {
         };
         const box = new Box.Registered(testBox);
         await box.move("bathroom");
+        expect(box.label).to.equal(testBox.label);
         expect(box.location).to.equal("bathroom");
         expect((await Box.get(testBox._id)).location).to.equal("bathroom");
       });
@@ -217,6 +223,7 @@ describe("Box", () => {
         };
         const box = new Box.Registered(testBox);
         await box.updateDescription("stores my shit");
+        expect(box.label).to.equal(testBox.label);
         expect(box.description).to.equal("stores my shit");
         expect((await Box.get(testBox._id)).description).to.equal(
           "stores my shit"

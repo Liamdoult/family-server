@@ -421,6 +421,7 @@ export const database = {
       created: new Date(1605800524626),
       updated: [new Date("2020-11-29T11:44:21.944Z")],
       label: "A1",
+      description: "Random loot",
       location: "Home Storage",
       items: ["5fe8957351d62da95dafd1ed"] as string[],
     },
