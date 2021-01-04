@@ -1,5 +1,54 @@
 import { ObjectId } from "mongodb";
 
+export const box = {
+  base: {
+    valid: [
+      {
+        label: "Bike Stuff",
+        location: "Store room",
+        description: "All my random bike shit",
+      },
+      {
+        label: "G1",
+        location: "Garage",
+      },
+    ],
+    invalid: [
+      {
+        label: "",
+        location: "Store room",
+        description: "Other stuff",
+      },
+      {
+        location: "Garage",
+        description: "Other stuff",
+      },
+      {
+        label: "G2",
+        location: "",
+      },
+      {
+        label: "G3",
+      },
+      {
+        label: {},
+        location: "Store room",
+        description: "All my random bike shit",
+      },
+      {
+        label: "Car stuff",
+        location: {},
+        description: "All my random bike shit",
+      },
+      {
+        label: "Helicopter Stuff",
+        location: "Store room",
+        description: {},
+      },
+    ],
+  },
+};
+
 export const database = {
   box: [
     {

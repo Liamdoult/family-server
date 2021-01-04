@@ -83,6 +83,46 @@ export namespace Box {
     }
   }
 
+  /**
+   * Validate a base objects fields.
+   *
+   * This should be performed before and after data is sent to the server.
+   *
+   * __This function creates a **NEW** object. This is to ensure that no other
+   * un-accounted for values are attached to the object.__ Thus, if you use
+   * this function, use the returned object and not the existing object (the
+   * one you passed into the function).
+   *
+   * If validating a `Registered` object, use `validateRegistered`.
+   *
+   * @param box The base box to validate.
+   * @returns A new validated base box object.
+   * @throws ValueError A field is invalid.
+   */
+  export function validateBase(box: any): Base {
+    let validatedBox: any = {};
+
+    if (!box.label || typeof box.label !== "string" || box.label === "")
+      throw new errors.ValueError("label");
+    validatedBox.label = box.label;
+
+    if (
+      !box.location ||
+      typeof box.location !== "string" ||
+      box.location === ""
+    )
+      throw new errors.ValueError("location");
+    validatedBox.location = box.location;
+
+    if (box.description) {
+      if (typeof box.description !== "string" || box.description === "")
+        throw new errors.ValueError("description");
+      validatedBox.description = box.description;
+    }
+
+    return validatedBox as Base;
+  }
+
   export async function register(
     location: string,
     label: string,

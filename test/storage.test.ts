@@ -52,4 +52,23 @@ describe("Box", () => {
       });
     });
   });
+
+  describe("validateBase", () => {
+    describe("valid", () => {
+      data.box.base.valid.forEach((box) => {
+        it(`${box.label}`, () => {
+          const result = Box.validateBase(box);
+          expect(result.label).to.equal(box.label);
+        });
+      });
+    });
+
+    describe("invalid", () => {
+      data.box.base.invalid.forEach((box) => {
+        it(`${box.label}`, () => {
+          expect(() => Box.validateBase(box)).to.throw(errors.ValueError);
+        });
+      });
+    });
+  });
 });
