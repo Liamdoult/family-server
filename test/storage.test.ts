@@ -229,6 +229,38 @@ describe("Box", () => {
           "stores my shit"
         );
       });
+
+      it("addItem", async () => {
+        let testBox = {
+          ...data.database.box[0],
+          _id: data.database.box[0]._id.toHexString(),
+        };
+        const box = new Box.Registered(testBox);
+        await box.addItem({ name: "new item" });
+        expect(box.label).to.equal(testBox.label);
+        expect(box.items[box.items.length - 1].name).to.equal("new item");
+
+        const fetchedBox = await Box.get(testBox._id);
+        expect(fetchedBox.items[fetchedBox.items.length - 1].name).to.equal(
+          "new item"
+        );
+      });
+
+      it("addItems", async () => {
+        let testBox = {
+          ...data.database.box[0],
+          _id: data.database.box[0]._id.toHexString(),
+        };
+        const box = new Box.Registered(testBox);
+        await box.addItems([{ name: "new item" }]);
+        expect(box.label).to.equal(testBox.label);
+        expect(box.items[box.items.length - 1].name).to.equal("new item");
+
+        const fetchedBox = await Box.get(testBox._id);
+        expect(fetchedBox.items[fetchedBox.items.length - 1].name).to.equal(
+          "new item"
+        );
+      });
     });
   });
 

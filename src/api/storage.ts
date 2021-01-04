@@ -43,15 +43,14 @@ export async function updateBox(request: Request, response: Response) {
     return response.status(400).send("Invalid Request");
   const id = request.query.id as string;
   try {
-    /* TODO add Items
-    if (update.items) {
-        const items: Item.Registered[] = await Promise.all(
-          json.items.map(storage.Item.getItem)
-        );
-        await storage.Box.addItems(id, items);
+    if (json.items) {
+      const items: Item.Registered[] = await Promise.all(
+        json.items.map(storage.Item.getItem)
+      );
+      await storage.Box.addItems(id, items);
     }
-    */
-    await storage.Box.update(id, json);
+    delete json.items;
+    if (Object.keys(json).length !== 0) await storage.Box.update(id, json);
     const box = await storage.Box.get(id);
     return response.status(200).json(box);
   } catch (err) {

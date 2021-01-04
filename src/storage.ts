@@ -50,10 +50,10 @@ export namespace Item {
    * @returns A registered item.
    */
   export async function getItem(
-    item: String | StorageLib.Item.Base
+    item: StorageLib.Item.Registered | StorageLib.Item.Base
   ): Promise<StorageLib.Item.Registered> {
-    if (item instanceof String) {
-      return get(item);
+    if ("_id" in item) {
+      return get(item._id);
     } else {
       return register(item);
     }

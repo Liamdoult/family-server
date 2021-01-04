@@ -176,7 +176,7 @@ export namespace Box {
           "Content-Type": "application/json",
         },
       });
-      if (res.status === 200) return Object.assign(this, update);
+      if (res.status === 200) return Object.assign(this, await res.json());
       throw new Error("Unknown issue raise by the server");
     }
 
@@ -194,11 +194,11 @@ export namespace Box {
     }
 
     async addItem(item: Item.Base | Item.Registered) {
-      // TODO
+      await this.update({ items: [item] });
     }
 
     async addItems(items: Array<Item.Base | Item.Registered>) {
-      // TODO
+      await this.update({ items });
     }
   }
 
