@@ -10,8 +10,20 @@ export namespace Item {
     name: string;
     description?: string;
     owner?: string;
-    quantity?: Number;
+    quantity?: number;
   }
+
+  export const validateBase = ajv.compile({
+    type: "object",
+    properties: {
+      name: { type: "string", minLength: 1 },
+      description: { type: "string" },
+      owner: { type: "string", minLength: 1 },
+      quantity: { type: "number", minimum: 0 },
+    },
+    required: ["name"],
+    additionalProperties: false,
+  } as JSONSchemaType<Base>);
 
   export interface Registered extends Base {
     _id: string;
