@@ -1,7 +1,9 @@
+import Ajv, { JSONSchemaType } from "ajv";
 import fetch from "node-fetch";
 import * as errors from "./errors";
 
 const url = process.env.BASEURL || "http://localhost:8080";
+const ajv = new Ajv();
 
 export namespace Item {
   export interface Base {
@@ -32,11 +34,33 @@ export namespace Box {
     description?: string;
   }
 
+  export const validatePartial = ajv.compile({
+    type: "object",
+    properties: {
+      location: { type: "string", minLength: 1 },
+      label: { type: "string", minLength: 1 },
+      description: { type: "string" },
+    },
+    required: [],
+    additionalProperties: false,
+  } as JSONSchemaType<Partial>);
+
   export interface Base {
     location: string;
     label: string;
     description?: string;
   }
+
+  export const validateBase = ajv.compile({
+    type: "object",
+    properties: {
+      location: { type: "string", minLength: 1 },
+      label: { type: "string", minLength: 1 },
+      description: { type: "string" },
+    },
+    required: ["location", "label"],
+    additionalProperties: false,
+  } as JSONSchemaType<Base>);
 
   export interface Registered extends Base {
     _id: string;
@@ -51,8 +75,7 @@ export namespace Box {
     }
 
     private async update(update: Partial) {
-      update = validatePartial(update);
-      if (update === {}) return;
+      if (!validatePartial(update)) throw new errors.ValueError("unknown");
       const res = await fetch(`${url}/storage/box?id=${this._id}`, {
         method: "patch",
         body: JSON.stringify(update),
@@ -87,152 +110,6 @@ export namespace Box {
   }
 
   /**
-   * Validate a partial object fields.
-   *
-   * This should be performed before and after data is sent to the server.
-   *
-   * __This function creates a **NEW** object. This is to ensure that no other
-   * un-accounted for values are attached to the object.__ Thus, if you use
-   * this function, use the returned object and not the existing object (the
-   * one you passed into the function).
-   *
-   * If validating a `Registered` object, use `validateRegistered`.
-   *
-   * @param box The base box to validate.
-   * @returns A new validated base box object.
-   * @throws ValueError A field is invalid.
-   */
-  export function validatePartial(box: any): Partial {
-    let validatedBox: any = {};
-
-    if ("label" in box) {
-      if (typeof box.label !== "string" || box.label === "")
-        throw new errors.ValueError("label");
-      validatedBox.label = box.label;
-    }
-
-    if ("location" in box) {
-      if (typeof box.location !== "string" || box.location === "")
-        throw new errors.ValueError("location");
-      validatedBox.location = box.location;
-    }
-
-    if ("description" in box) {
-      if (typeof box.description !== "string")
-        throw new errors.ValueError("description");
-      validatedBox.description = box.description;
-    }
-
-    return validatedBox as Partial;
-  }
-
-  /**
-   * Validate a base objects fields.
-   *
-   * This should be performed before and after data is sent to the server.
-   *
-   * __This function creates a **NEW** object. This is to ensure that no other
-   * un-accounted for values are attached to the object.__ Thus, if you use
-   * this function, use the returned object and not the existing object (the
-   * one you passed into the function).
-   *
-   * If validating a `Registered` object, use `validateRegistered`.
-   *
-   * @param box The base box to validate.
-   * @returns A new validated base box object.
-   * @throws ValueError A field is invalid.
-   */
-  export function validateBase(box: any): Base {
-    let validatedBox: any = {};
-
-    if (!box.label || typeof box.label !== "string" || box.label === "")
-      throw new errors.ValueError("label");
-    validatedBox.label = box.label;
-
-    if (
-      !box.location ||
-      typeof box.location !== "string" ||
-      box.location === ""
-    )
-      throw new errors.ValueError("location");
-    validatedBox.location = box.location;
-
-    if (box.description) {
-      if (typeof box.description !== "string" || box.description === "")
-        throw new errors.ValueError("description");
-      validatedBox.description = box.description;
-    }
-
-    return validatedBox as Base;
-  }
-
-  /**
-   * Validate a registered objects fields.
-   *
-   * This should be performed before data is sent to the server and after the
-   * server receives data.
-   *
-   * __This function creates a **NEW** object. This is to ensure that no other
-   * un-accounted for values are attached to the object.__ Thus, if you use
-   * this function, use the returned object and not the existing object (the
-   * one you passed into the function).
-   *
-   * If validating a `Base` object, use `validateBase`.
-   *
-   * @param box The base box to validate.
-   * @returns A new validated base box object.
-   * @throws ValueError A field is invalid.
-   */
-  export function validateRegistered(box: any): Registered {
-    let validatedBox: any = {};
-
-    if (!box.label || typeof box.label !== "string" || box.label === "")
-      throw new errors.ValueError("label");
-    validatedBox.label = box.label;
-
-    if (
-      !box.location ||
-      typeof box.location !== "string" ||
-      box.location === ""
-    )
-      throw new errors.ValueError("location");
-    validatedBox.location = box.location;
-
-    if (box.description) {
-      if (typeof box.description !== "string" || box.description === "")
-        throw new errors.ValueError("description");
-      validatedBox.description = box.description;
-    }
-
-    if (
-      !box._id ||
-      typeof box._id !== "string" ||
-      box._id === "" ||
-      box._id.length !== 24
-    )
-      throw new errors.ValueError("_id");
-    validatedBox._id = box._id;
-
-    if (!box.items || !Array.isArray(box.items))
-      throw new errors.ValueError("items");
-    // TODO: Validate each item
-    validatedBox.items = box.items;
-
-    if (!box.created || !(box.created instanceof Date))
-      throw new errors.ValueError("created");
-    validatedBox.created = box.created;
-
-    if (!box.updated || !Array.isArray(box.updated))
-      throw new errors.ValueError("updated");
-    box.updated.forEach((item: any) => {
-      if (!(item instanceof Date)) throw new errors.ValueError("updated");
-    });
-    validatedBox.updated = box.updated;
-
-    return validatedBox as Registered;
-  }
-
-  /**
    * Register a new Box and attach items.
    *
    * If the Items do not exist, it will register new items.
@@ -241,7 +118,7 @@ export namespace Box {
     box: Base,
     items: Array<Item.Base | Item.Registered>
   ): Promise<Registered> {
-    box = validateBase(box);
+    if (!validateBase(box)) throw new errors.ValueError("unknown");
     const res = await fetch(`${url}/storage/box`, {
       method: "post",
       body: JSON.stringify({ ...box, items }),

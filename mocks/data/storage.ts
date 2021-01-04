@@ -221,6 +221,17 @@ export const box = {
         location: "updated location",
       },
       {
+        items: [],
+      },
+      {
+        items: [
+          {
+            name: "spare tire",
+            description: "29",
+          },
+        ],
+      },
+      {
         label: "updated all",
         description: "updated all",
         location: "updated all",
@@ -245,6 +256,9 @@ export const box = {
       },
       {
         location: "",
+      },
+      {
+        items: {},
       },
     ],
   },

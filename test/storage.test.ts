@@ -120,11 +120,7 @@ describe("Box", () => {
       describe("valid", () => {
         data.box.partial.valid.forEach((box) => {
           it(`${box.label || box.location || box.description}`, () => {
-            const result = Box.validatePartial(box);
-            if (box.label) expect(result.label).to.equal(box.label);
-            if (box.description)
-              expect(result.description).to.equal(box.description);
-            if (box.location) expect(result.location).to.equal(box.location);
+            expect(Box.validatePartial(box));
           });
         });
       });
@@ -132,7 +128,7 @@ describe("Box", () => {
       describe("invalid", () => {
         data.box.partial.invalid.forEach((box) => {
           it(`${Object.keys(box)}`, () => {
-            expect(() => Box.validatePartial(box)).to.throw(errors.ValueError);
+            expect(!Box.validatePartial(box));
           });
         });
       });
@@ -142,8 +138,7 @@ describe("Box", () => {
       describe("valid", () => {
         data.box.base.valid.forEach((box) => {
           it(`${box.label}`, () => {
-            const result = Box.validateBase(box);
-            expect(result.label).to.equal(box.label);
+            expect(Box.validateBase(box));
           });
         });
       });
@@ -151,28 +146,7 @@ describe("Box", () => {
       describe("invalid", () => {
         data.box.base.invalid.forEach((box) => {
           it(`${box.label}`, () => {
-            expect(() => Box.validateBase(box)).to.throw(errors.ValueError);
-          });
-        });
-      });
-    });
-
-    describe("Registered", () => {
-      describe("valid", () => {
-        data.box.registered.valid.forEach((box) => {
-          it(`${box.label}`, async () => {
-            const result = Box.validateRegistered(box);
-            expect(result.label).to.equal(box.label);
-          });
-        });
-      });
-
-      describe("invalid", () => {
-        data.box.registered.invalid.forEach((box) => {
-          it(`${box.label}`, () => {
-            expect(() => Box.validateRegistered(box)).to.throw(
-              errors.ValueError
-            );
+            expect(!Box.validateBase(box));
           });
         });
       });
