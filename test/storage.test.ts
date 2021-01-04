@@ -76,6 +76,19 @@ describe("Box", () => {
         });
       });
     });
+
+    describe("update", () => {
+      it("relabel", async () => {
+        let testBox = {
+          ...data.database.box[0],
+          _id: data.database.box[0]._id.toHexString(),
+        };
+        const box = new Box.Registered(testBox);
+        await box.relabel("new label");
+        expect(box.label).to.equal("new label");
+        expect((await Box.get(testBox._id)).label).to.equal("new label");
+      });
+    });
   });
 
   describe("validation", () => {
