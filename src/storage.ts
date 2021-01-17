@@ -250,9 +250,18 @@ export namespace Box {
     term: String
   ): Promise<StorageLib.Box.Registered[]> {
     const collection = dbClient.db(dbName).collection(collectionName);
-    const res = collection.find({
-      $or: [{ label: { $regex: term } }, { location: { $regex: term } }],
-    });
-    return res.toArray();
+    const res = await collection
+      .find({
+        $or: [{ label: { $regex: term } }, { location: { $regex: term } }],
+      })
+      .toArray();
+    return Promise.all(
+      res.map(async (box: any) => {
+        return {
+          ...box,
+          items: await Item.getMany(box.items),
+        };
+      })
+    );
   }
 }
