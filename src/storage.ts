@@ -100,7 +100,10 @@ export namespace Item {
   ): Promise<StorageLib.Item.Registered[]> {
     const collection = dbClient.db(dbName).collection(collectionName);
     const res = collection.find({
-      $or: [{ name: { $regex: term } }, { description: { $regex: term } }],
+      $or: [
+        { name: { $regex: term, $options: 'i' } },
+        { description: { $regex: term, $options: 'i' } },
+      ],
     });
     return res.toArray();
   }
