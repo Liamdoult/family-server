@@ -1,12 +1,12 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from 'mongodb';
 
-import { Item } from "./lib/shopping";
-import { RegisteredItem } from "./lib/shopping";
+import { Item } from './lib/shopping';
+import { RegisteredItem } from './lib/shopping';
 
-import { dbName } from "./database";
-import { dbClient } from "./database";
+import { dbName } from './database';
+import { dbClient } from './database';
 
-const collectionName = "shopping";
+const collectionName = 'shopping';
 
 export async function get(): Promise<Array<RegisteredItem>> {
   const collection = dbClient.db(dbName).collection(collectionName);

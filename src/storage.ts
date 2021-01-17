@@ -1,13 +1,13 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from 'mongodb';
 
-import { dbName } from "./database";
-import { dbClient } from "./database";
+import { dbName } from './database';
+import { dbClient } from './database';
 
-import * as StorageLib from "./lib/storage";
-import { NotFoundError } from "./lib/errors";
+import * as StorageLib from './lib/storage';
+import { NotFoundError } from './lib/errors';
 
 export namespace Item {
-  const collectionName = "items";
+  const collectionName = 'items';
 
   /**
    * Register a new item in the box.
@@ -38,7 +38,9 @@ export namespace Item {
    */
   export async function get(id: String): Promise<StorageLib.Item.Registered> {
     const collection = dbClient.db(dbName).collection(collectionName);
-    const res = await collection.findOne({ _id: new ObjectId(id as string) });
+    const res = await collection.findOne({
+      _id: new ObjectId(id as string),
+    });
     if (!res) throw new NotFoundError(id);
     return res as StorageLib.Item.Registered;
   }
@@ -52,7 +54,7 @@ export namespace Item {
   export async function getItem(
     item: StorageLib.Item.Registered | StorageLib.Item.Base
   ): Promise<StorageLib.Item.Registered> {
-    if ("_id" in item) {
+    if ('_id' in item) {
       return get(item._id);
     } else {
       return register(item);
@@ -71,7 +73,9 @@ export namespace Item {
   ): Promise<StorageLib.Item.Registered[]> {
     const collection = dbClient.db(dbName).collection(collectionName);
     const res = collection.find({
-      _id: { $in: itemIds.map((id: string | ObjectId) => new ObjectId(id)) },
+      _id: {
+        $in: itemIds.map((id: string | ObjectId) => new ObjectId(id)),
+      },
     });
     return res.toArray();
   }
@@ -107,12 +111,12 @@ export namespace Item {
       { _id: new ObjectId(_id) },
       { $set: item }
     );
-    if (res.modifiedCount !== 1) throw new Error("No boxes updated");
+    if (res.modifiedCount !== 1) throw new Error('No boxes updated');
   }
 }
 
 export namespace Box {
-  const collectionName = "boxes";
+  const collectionName = 'boxes';
 
   /**
    * Create a new box.
@@ -143,7 +147,7 @@ export namespace Box {
       { _id: new ObjectId(_id) },
       { $set: box, $push: { updated: new Date() } }
     );
-    if (res.modifiedCount !== 1) throw new Error("No boxes updated");
+    if (res.modifiedCount !== 1) throw new Error('No boxes updated');
     return new StorageLib.Box.Registered(res.result);
   }
 
@@ -164,7 +168,7 @@ export namespace Box {
       { _id: new ObjectId(box as string) },
       { $push: { items: item._id, updated: new Date() } }
     );
-    if (res.modifiedCount !== 1) throw new Error("No boxes updated");
+    if (res.modifiedCount !== 1) throw new Error('No boxes updated');
   }
 
   /**
@@ -185,7 +189,7 @@ export namespace Box {
       { _id: new ObjectId(box as string) },
       { $push: { items: { $each: ids }, updated: new Date() } }
     );
-    if (res.modifiedCount !== 1) throw new Error("No boxes updated");
+    if (res.modifiedCount !== 1) throw new Error('No boxes updated');
   }
 
   /**
@@ -200,7 +204,7 @@ export namespace Box {
     } catch (err) {
       if (
         err.message ===
-        "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters"
+        'Argument passed in must be a single String of 12 bytes or a string of 24 hex characters'
       )
         throw new NotFoundError(id);
       throw err;
@@ -236,7 +240,7 @@ export namespace Box {
       { _id: new ObjectId(boxId) },
       { $pullAll: { items: itemIds.map((id) => new ObjectId(id)) } }
     );
-    if (res.modifiedCount !== 1) throw new Error("No boxes updated");
+    if (res.modifiedCount !== 1) throw new Error('No boxes updated');
     await Item.removeMany(itemIds);
     return await get(boxId);
   }

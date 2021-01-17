@@ -1,17 +1,17 @@
-import { Request } from "express";
-import { Response } from "express";
+import { Request } from 'express';
+import { Response } from 'express';
 
-import { Item, Box } from "../lib/storage";
-import * as errors from "../lib/errors";
+import { Item, Box } from '../lib/storage';
+import * as errors from '../lib/errors';
 
-import * as storage from "../storage";
+import * as storage from '../storage';
 
 export async function createBox(request: Request, response: Response) {
   // console.log("POST /storage/box");
   const json = request.body;
-  if (!json) return response.status(400).send("Invalid Request");
-  if (!json.label) return response.status(400).send("Invalid Request");
-  if (!json.location) return response.status(400).send("Invalid Request");
+  if (!json) return response.status(400).send('Invalid Request');
+  if (!json.label) return response.status(400).send('Invalid Request');
+  if (!json.location) return response.status(400).send('Invalid Request');
 
   try {
     const box = await storage.Box.register(json);
@@ -26,10 +26,10 @@ export async function createBox(request: Request, response: Response) {
   } catch (err) {
     switch (err.constructor) {
       case errors.NotFoundError:
-        return response.status(400).send("Invalid Request");
+        return response.status(400).send('Invalid Request');
       default:
         console.log(err);
-        return response.status(500).send("Unknown Server Issue");
+        return response.status(500).send('Unknown Server Issue');
     }
   }
 }
@@ -37,10 +37,10 @@ export async function createBox(request: Request, response: Response) {
 export async function updateBox(request: Request, response: Response) {
   // console.log("PATCH /storage/box");
   const json = request.body;
-  if (!request.query) return response.status(400).send("Invalid Request");
-  if (!request.query.id) return response.status(400).send("Invalid Request");
+  if (!request.query) return response.status(400).send('Invalid Request');
+  if (!request.query.id) return response.status(400).send('Invalid Request');
   if (!Box.validatePartial(json))
-    return response.status(400).send("Invalid Request");
+    return response.status(400).send('Invalid Request');
   const id = request.query.id as string;
   try {
     if (json.items) {
@@ -56,54 +56,54 @@ export async function updateBox(request: Request, response: Response) {
   } catch (err) {
     switch (err.constructor) {
       case errors.ValueError:
-        return response.status(400).send("Invalid Request");
+        return response.status(400).send('Invalid Request');
       case errors.NotFoundError:
-        return response.status(400).send("Invalid Request");
+        return response.status(400).send('Invalid Request');
       default:
         console.log(err);
-        return response.status(500).send("Unknown Server Issue");
+        return response.status(500).send('Unknown Server Issue');
     }
   }
 }
 
 export async function getBox(request: Request, response: Response) {
   // console.log("GET /storage/box");
-  if (!request.query) return response.status(400).send("Invalid Request");
-  if (!request.query.id) return response.status(400).send("Invalid Request");
+  if (!request.query) return response.status(400).send('Invalid Request');
+  if (!request.query.id) return response.status(400).send('Invalid Request');
   const id = request.query.id;
-  if (typeof id !== "string")
-    return response.status(400).send("Invalid Request");
+  if (typeof id !== 'string')
+    return response.status(400).send('Invalid Request');
   try {
     const box = await storage.Box.get(id);
     return response.status(200).json(box);
   } catch (err) {
     switch (err.constructor) {
       case errors.NotFoundError:
-        return response.status(404).send("Not Found.");
+        return response.status(404).send('Not Found.');
       default:
         console.log(err);
-        return response.status(500).send("Unknown Server Issue");
+        return response.status(500).send('Unknown Server Issue');
     }
   }
 }
 
 export async function getItem(request: Request, response: Response) {
   // console.log("GET /storage/item");
-  if (!request.query) return response.status(400).send("Invalid Request");
-  if (!request.query.id) return response.status(400).send("Invalid Request");
+  if (!request.query) return response.status(400).send('Invalid Request');
+  if (!request.query.id) return response.status(400).send('Invalid Request');
   const id = request.query.id;
-  if (typeof id !== "string")
-    return response.status(400).send("Invalid Request");
+  if (typeof id !== 'string')
+    return response.status(400).send('Invalid Request');
   try {
     const item = await storage.Item.get(id);
     return response.status(200).json(item);
   } catch (err) {
     switch (err.constructor) {
       case errors.NotFoundError:
-        return response.status(400).send("Invalid Request");
+        return response.status(400).send('Invalid Request');
       default:
         console.log(err);
-        return response.status(500).send("Unknown Server Issue");
+        return response.status(500).send('Unknown Server Issue');
     }
   }
 }
@@ -111,10 +111,10 @@ export async function getItem(request: Request, response: Response) {
 export async function updateItem(request: Request, response: Response) {
   // console.log("PATCH /storage/item");
   const json = request.body;
-  if (!request.query) return response.status(400).send("Invalid Request");
-  if (!request.query.id) return response.status(400).send("Invalid Request");
+  if (!request.query) return response.status(400).send('Invalid Request');
+  if (!request.query.id) return response.status(400).send('Invalid Request');
   if (!Item.validatePartial(json))
-    return response.status(400).send("Invalid Request");
+    return response.status(400).send('Invalid Request');
   const id = request.query.id as string;
   try {
     await storage.Item.update(id, json);
@@ -123,12 +123,12 @@ export async function updateItem(request: Request, response: Response) {
   } catch (err) {
     switch (err.constructor) {
       case errors.ValueError:
-        return response.status(400).send("Invalid Request");
+        return response.status(400).send('Invalid Request');
       case errors.NotFoundError:
-        return response.status(400).send("Invalid Request");
+        return response.status(400).send('Invalid Request');
       default:
         console.log(err);
-        return response.status(500).send("Unknown Server Issue");
+        return response.status(500).send('Unknown Server Issue');
     }
   }
 }
@@ -136,26 +136,26 @@ export async function updateItem(request: Request, response: Response) {
 export async function deleteBoxItems(request: Request, response: Response) {
   // console.log("DELETE /storage/box");
   const json = request.body;
-  if (!json.boxId) return response.status(400).send("Invalid Request");
-  if (!json.items) return response.status(400).send("Invalid Request");
+  if (!json.boxId) return response.status(400).send('Invalid Request');
+  if (!json.items) return response.status(400).send('Invalid Request');
   try {
     const updatedBox = await storage.Box.removeItem(json.boxId, json.items);
     return response.status(200).json(updatedBox);
   } catch (err) {
     switch (err.constructor) {
       case errors.NotFoundError:
-        return response.status(400).send("Invalid Request");
+        return response.status(400).send('Invalid Request');
       default:
         console.log(err);
-        return response.status(500).send("Unknown Server Issue");
+        return response.status(500).send('Unknown Server Issue');
     }
   }
 }
 
 export async function search(request: Request, response: Response) {
   // console.log("GET /storage/search");
-  if (!request.query) return response.status(400).send("Invalid Request");
-  if (!request.query.term) return response.status(400).send("Invalid Request");
+  if (!request.query) return response.status(400).send('Invalid Request');
+  if (!request.query.term) return response.status(400).send('Invalid Request');
   const items = await storage.Item.search(request.query.term as string);
   const boxes = await storage.Box.search(request.query.term as string);
   return response.status(200).json({
